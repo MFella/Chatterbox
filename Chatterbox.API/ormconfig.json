@@ -1,0 +1,10 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "postgres",
+    "password": "zetis",
+    "database": "chatterbox",
+    "entities": ["dist/**/*.entity.js"],
+    "synchronize": true
+  }

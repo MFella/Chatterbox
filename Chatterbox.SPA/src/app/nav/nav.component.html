@@ -1,13 +1,32 @@
 
-  <mat-toolbar color="primary">
 
-    <div class="nav_container">
-      <button mat-button color="secondary">Basic</button>
-      <button mat-button color="secondary">Basic</button>
-      <button mat-button color="secondary">Logo</button>
-      <button mat-button color="secondary">Basic</button>
-      <button mat-button color="secondary">Basic</button>
+<div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+  <div class="container">
+    <a href="/" class="navbar-brand"> Chatterbox <img class="talker_logo" src="../../assets/talker.png" alt="logo"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav w-100">
+        <!-- <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Themes <span class="caret"></span></a>
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link"><fa-icon [icon]="icons[1]"></fa-icon>Room list</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"><fa-icon [icon]="icons[4]"></fa-icon>Chat with user</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['login']" [routerLinkActive]="['is-active']"><fa-icon [icon]="icons[2]"></fa-icon>Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://blog.bootswatch.com/"><fa-icon [icon]="icons[3]"></fa-icon>About</a>
+        </li>
+        <li class="nav-item ml-auto">
+          <a class="nav-link" href="https://blog.bootswatch.com/"><fa-icon [icon]="icons[0]"></fa-icon>Hi User</a>
+        </li>
+      </ul>
     </div>
-
-  </mat-toolbar>
-
+  </div>
+</div>
