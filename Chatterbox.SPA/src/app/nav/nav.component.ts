@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faUsers, faListAlt, faQuestion, faSignInAlt, faUserTie, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faListAlt, faQuestion, faSignInAlt, faUserTie, faUserPlus, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-nav',
@@ -8,7 +8,7 @@ import { faUsers, faListAlt, faQuestion, faSignInAlt, faUserTie, IconDefinition 
 })
 export class NavComponent implements OnInit {
 
-  public icons: Array<IconDefinition> = [faUserTie, faListAlt, faSignInAlt, faQuestion, faUsers]
+  public icons: Array<IconDefinition> = [faUserTie, faListAlt, faSignInAlt, faQuestion, faUsers, faUserPlus]
 
 
   constructor() {}

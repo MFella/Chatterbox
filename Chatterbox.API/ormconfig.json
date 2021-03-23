@@ -1,10 +1,9 @@
 {
-    "type": "postgres",
+    "type": "mongodb",
     "host": "localhost",
-    "port": 5432,
-    "username": "postgres",
-    "password": "zetis",
+    "port": 27017,
     "database": "chatterbox",
     "entities": ["dist/**/*.entity.js"],
-    "synchronize": true
+    "synchronize": true,
+    "useUnifiedTopology": true
   }

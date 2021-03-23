@@ -11,13 +11,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
-  declarations: [			
+  declarations: [				
     AppComponent,
       NavComponent,
       HomeComponent,
-      LoginComponent
+      LoginComponent,
+      RegisterComponent
    ],
   imports: [
     BrowserModule,

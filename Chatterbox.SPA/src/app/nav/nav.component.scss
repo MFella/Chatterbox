@@ -46,8 +46,10 @@
 
 li.nav-item
 {
-  width: 10vw;
-  
+  //width: 11vw;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
   a.nav-link
   {
     display: flex; 
