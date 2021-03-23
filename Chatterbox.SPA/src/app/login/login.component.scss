@@ -7,7 +7,7 @@
 }
 
 .user_card {
-    height: 400px;
+    //height: 400px;
     width: 350px;
     margin-top: auto;
     margin-bottom: auto;
@@ -21,7 +21,6 @@
     -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 5px;
-
 }
 .brand_logo_container {
     position: absolute;
@@ -40,7 +39,7 @@
     border: 2px solid white;
 }
 .form_container {
-    margin-top: 100px;
+    margin-top: 4rem;
 }
 .login_btn {
     width: 100%;
@@ -74,4 +73,46 @@
     a{
         color: rgba(192,57,2,.9);
     }
+}
+
+.oauth_container
+{
+
+    &:nth-child(even)
+    {
+        img{
+            transform: scale(1.5);
+        }
+    }
+
+    
+    button
+    {
+        display: flex;
+        align-items: center;
+        background-color: rgba(2, 117, 216, .9);
+        border-radius: .7rem;
+        justify-content: space-between !important;
+        transition: all .4s;
+
+        img
+        {
+            width: 2rem;
+
+        }
+
+        span
+        {
+            border-left: 1px rgba(0,0,0,.35) solid;
+            padding-left: 1.3rem;
+        
+
+        }
+
+        &:hover
+        {
+            background-color: rgba(45, 149, 240, 0.8);
+        }
+    }
+
 }
