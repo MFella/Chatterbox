@@ -2,7 +2,7 @@
 .container-fluid{
     // background: #60a3bc;
     padding-top: 11rem;
-    padding-bottom: 4rem;
+    padding-bottom: 3rem;
     min-height: 100vh;
 }
 
@@ -20,7 +20,7 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    border-radius: 5px;
+    border-radius: .4rem;
 }
 .brand_logo_container {
     position: absolute;
@@ -105,8 +105,6 @@
         {
             border-left: 1px rgba(0,0,0,.35) solid;
             padding-left: 1.3rem;
-        
-
         }
 
         &:hover

@@ -1,12 +1,88 @@
-.container
+.container-fluid
 {
-    padding-top: 8rem;
-    min-height: 80vh;
+    //padding-top: clamp(50vw,70vw, 1000px) !important;
+    min-height: 100vh;
+    padding-top: 6rem;
+    //background-color: rgba(0,0,0,.2);
+}
+
+.card
+{
+    border-radius: .4rem;
+}
+
+form.form-sign
+{
+
+    input[type="date"]:focus::before {
+        content: none;
+        display: none;
+    }
+
+    input[type=date]:required:invalid::-webkit-datetime-edit {
+        color: transparent;
+    }
+    input[type=date]:focus::-webkit-datetime-edit {
+        color: black !important;
+    }
+
+
+    label
+    {
+        position: absolute;
+        transform: translateX(.7rem) translateY(-4rem);
+        transition: all .4s;
+        font-size: 1rem;
+        pointer-events: none;
+        cursor: text;
+        opacity: .6;
+        // z-index: 5;
+    }
+
+    input, select   
+    {
+        border-radius: .4rem;
+        //border: none;
+        //border-bottom: 2px black solid;
+        opacity: .7;
+        transition: all .4s;
+        margin-bottom: 2rem;
+        font-weight: 1000;
+
+        &:valid
+        {
+            opacity: 1;
+        }
+    }
+
+    input:focus
+    {
+        opacity: 1;
+        transform: translateY(-.1rem);
+        box-shadow: -3px 9px 28px -11px rgba(0,0,0,0.75);
+    }
+
+    input:focus ~ label,
+    input:valid ~ label
+    //select:focus ~ label,
+    //select:valid ~ label
+    {       
+
+        transform: translateX(.1rem) translateY(-1.7rem) ;
+        font-size: 1rem;
+        cursor: default;
+        opacity: 1;
+       // display: none;
+    }
+
+
+
 }
 
 .card-body
 {
-
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: .4rem;
     h2{
         &::before, &::after
         {
@@ -28,8 +104,10 @@
         }
 
     }
-
 }
+
+
+
 
 
 @keyframes sizedLined
@@ -39,4 +117,12 @@
     50%{width: 5rem; transform: translatex(2rem);}
     75%{width: 7.5rem; transform: translatex(1rem);}
     100%{width: 10rem; transform: translatex(0rem);}
+}
+
+@media only screen and (min-width: 1600px)
+{
+    .container-fluid
+    {
+        padding-top: 9rem;
+    }
 }
