@@ -1,18 +1,27 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { ObjectID, Repository } from 'typeorm';
 import { UserForRegisterDto } from './dtos/userForRegister.dto';
 import {Keccak} from 'sha3';
+import { UserForLoginDto } from './dtos/userForLogin.dto';
+import { UserToReturnDto } from './dtos/userToReturn.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
 
     constructor(
         @InjectRepository(User)
-        private userRepository: Repository<User>
+        private userRepository: Repository<User>,
+        private readonly jwtServ: JwtService
     )
     {}
+
+    async checkLoginAccess(login: string)
+    {
+        return !await this.userRepository.findOne({login: login});
+    }
 
     async registerUser(userForRegisterDto: UserForRegisterDto)
     {
@@ -20,8 +29,6 @@ export class AuthService {
         const userByEmail = await this.userRepository.findOne({email: userForRegisterDto.email});
         const userByLogin = await this.userRepository.findOne({login: userForRegisterDto.login});
 
-        console.log(userByEmail);
-        console.log(userByLogin);
 
         if(userByEmail)
         {
@@ -44,7 +51,6 @@ export class AuthService {
             const hash = new Keccak(256);
 
             hash.update(userForRegisterDto.password);
-            console.log(hash.digest());
 
             let {repeatPassword, password, dateOfBirth, ...userDetails} = userForRegisterDto;
             let splittedDate = dateOfBirth.split('-').map(x => parseInt(x));
@@ -63,6 +69,45 @@ export class AuthService {
         {
             throw new InternalServerErrorException('Error occured during creating new user');
         }
+    }
+
+    async validateUser(userForLoginDto: UserForLoginDto): Promise<UserToReturnDto>
+    {
+        const res = await this.userRepository.findOne({login: userForLoginDto.login});
+
+        if(res)
+        {
+            const hash = new Keccak(256);
+            hash.update(userForLoginDto.password);
+
+            if(hash.digest().toString('hex').normalize() === res.password.toString('hex').normalize())
+            {
+                const {password,  ...rest} = res; 
+
+                return rest;
+            }
+
+            //return false;
+            throw new UnauthorizedException('User with that combination doesnt exist');
+
+        } else throw new UnauthorizedException('User with that combination doesnt exist');
+    }
+
+    async loginUser(userForLoginDto: UserForLoginDto)
+    {
+        const user = await this.validateUser(userForLoginDto);
+
+        if(user)
+        {
+            const payload = {login: user.login, _id: user._id.toString()}
+            const details = {
+                access_token: this.jwtServ.sign(payload),
+                user
+            };
+            return details;
+
+        }
+
     }
 
 }
