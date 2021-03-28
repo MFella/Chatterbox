@@ -1,11 +1,11 @@
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {Binary, Column, Entity, ObjectID, ObjectIdColumn, PrimaryGeneratedColumn} from 'typeorm';
 
 
 @Entity()
 export class User
 {
-    @PrimaryGeneratedColumn('uuid')
-    id: number;
+    @ObjectIdColumn()
+    _id: ObjectID;
 
     @Column({
         nullable: false
@@ -18,6 +18,7 @@ export class User
     surname: string;
 
     @Column({
+        type: 'date',
         nullable: false
     })
     dateOfBirth: Date;
@@ -38,7 +39,7 @@ export class User
     login: string;
 
     @Column({
-        type: "blob",
+        type: "binary",
         nullable: false
     })
     password: Buffer;
