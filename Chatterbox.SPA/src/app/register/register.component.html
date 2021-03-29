@@ -1,69 +1,74 @@
 <div class="container-fluid pb-4">
   <div class="row">
     <div class="col-xl-12">
-      <form class="card mx-auto w-75 form-sign">
+      <div class="card mx-auto w-75">
         <!-- <div class="card-header">
           Featured
         </div> -->
         <div class="card-body">
           <h2 class="card-title d-flex justify-content-center">Register</h2>
           <hr>
-          <form class="pt-2">
+          <form class="pt-2 form-sign" [formGroup]="registerForm">
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-                    <label for="exampleInputEmail1">Name</label>
-                    <!-- <small id="nameHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+                    <input type="text" class="form-control" id="name" formControlName="name"
+                    aria-describedby="emailHelp" required >
+                    <label for="nameLabel">Name</label>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                    <input type="email" class="form-control" id="surname" formControlName="surname"
+                    aria-describedby="emailHelp" required>
                     <label for="exampleInputEmail1">Surname</label>
-                    <!-- <small id="surnameHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
                   </div>
                 </div>
                 <div class="col-md-6 pt-2">
                   <div class="form-group">
                     
-                    <input type="date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                    <input type="date" class="form-control" id="dateOfBirth" formControlName="dateOfBirth"
+                     aria-describedby="emailHelp" required>
                     <label for="exampleInputEmail1">Date of birth</label>
                     <small id="dateHelp" class="form-text text-muted">You must be of legal age.</small>
                   </div>
                 </div>
                 <div class="col-md-6 pt-2">
                   <div class="form-group">
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                    <input type="email" class="form-control" id="country" formControlName="country"
+                    aria-describedby="emailHelp" required>
                     <label for="exampleInputEmail1">Country</label>
-                    <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">                  
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                    <input type="email" class="form-control" id="email" formControlName="email"
+                    aria-describedby="emailHelp" required>
                     <label for="exampleInputEmail1">Email</label>
                     <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">   
-                    <input type="password" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                    <input type="password" class="form-control" id="login" formControlName="login"
+                    aria-describedby="emailHelp" required>
                     <label for="exampleInputEmail1">Your login</label>
                     <small id="emailHelp" class="form-text text-muted">Your login will be also your nick</small>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">               
-                    <input type="password" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                    <input type="password" class="form-control" id="password" formControlName="password"
+                    aria-describedby="emailHelp" required>
                     <label for="exampleInputEmail1">Password</label>
                     <small id="passwordHelp" class="form-text text-muted">At least length of 6, latin letters, at least 1 number and 1 capital letter.</small>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">    
-                    <input type="password" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                    <input type="password" class="form-control" id="repeatPassword" formControlName="repeatPassword"
+                    aria-describedby="emailHelp" required>
                     <label for="exampleInputEmail1">Repeat password</label>
                     <small id="repeatpasswordHelp" class="form-text text-muted">Passwords must match.</small>
                   </div>
@@ -75,7 +80,7 @@
 
           </form>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>
