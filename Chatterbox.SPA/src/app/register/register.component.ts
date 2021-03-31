@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { merge, Observable, of, OperatorFunction, Subject } from 'rxjs';
+import { debounceTime, filter, map, distinctUntilChanged } from 'rxjs/operators';
 import { AlertService } from '../_services/alert.service';
 import { AuthService } from '../_services/auth.service';
+import { LoginAvailableValidator } from './loginAvailable.validator';
 
 @Component({
   selector: 'app-register',
@@ -12,12 +16,23 @@ import { AuthService } from '../_services/auth.service';
 export class RegisterComponent implements OnInit {
 
   registerForm!: FormGroup;
+  countries!: Array<string>;
+
+  @ViewChild('instance', {static: true}) instance!: NgbTypeahead;
+  focus$ = new Subject<string>();
+  click$ = new Subject<string>();
 
   constructor(private fb: FormBuilder, private alert: AlertService,
     private authServ: AuthService, private router: Router) { }
 
   ngOnInit() {
     this.initForm();
+
+    this.authServ.getCountries()
+      .subscribe((res: Array<string>) =>
+        {
+          this.countries = res;
+        })
 
   }
 
@@ -33,9 +48,11 @@ export class RegisterComponent implements OnInit {
       country: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(100), Validators.pattern(/^[A-Za-z]+$/)]],
       email: ['', [Validators.required, 
         Validators.pattern(/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i)]],
-      login: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(25), Validators.pattern(/^[a-zA-Z0-9_.-]*$/)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30), Validators.pattern(/^[\w\[\]`!@#$%\^&*()={}:;<>+'-]*$/)]],
-      repeatPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30), Validators.pattern(/^[\w\[\]`!@#$%\^&*()={}:;<>+'-]*$/)]]
+      login: ['', { validators: [Validators.required, Validators.minLength(5), Validators.maxLength(25), 
+        Validators.pattern(/^[a-zA-Z0-9_.-]*$/), this.checkAvailability(this.registerForm.get('login'),this.authServ)]}],
+        // have to work on it
+      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30), Validators.pattern(/^(?=\D*\d)(?=.*?[a-zA-Z]).*[\W_].*$/)]],
+      repeatPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30), Validators.pattern(/^(?=\D*\d)(?=.*?[a-zA-Z]).*[\W_].*$/)]]
     }, {validators: [this.passMatch, this.isFullAge]})
 
   }
@@ -65,23 +82,57 @@ export class RegisterComponent implements OnInit {
     {
       'notFullAge': true
     }
+  }
 
+  checkAvailability(login: AbstractControl | null, serv: AuthService): null | Object | undefined
+  {
+
+    console.log(login);
+    if(login?.status.normalize() === 'VALID')
+    {
+
+      serv.checkAvailabilityOfLogin(login?.value)
+        .subscribe((res: boolean) =>
+        {
+
+          return res? null:
+          {
+            'loginNotAvailable': true
+          }
+        });
+
+        return null;
+
+    } else return null;
   }
 
   submit(): void
   {
     const forRegister = Object.assign({}, this.registerForm.value);
 
-    this.authServ.register(forRegister)
-    .subscribe(res =>
-      {
-        this.alert.success('You have been registered successfully!');
-        this.router.navigate([''])
-      }, err =>
-      {
-        console.log(err);
-        this.alert.error('Something went wrong');
-      })
+    // this.authServ.register(forRegister)
+    // .subscribe(res =>
+    //   {
+    //     this.alert.success('You have been registered successfully!');
+    //     this.router.navigate([''])
+    //   }, err =>
+    //   {
+    //     console.log(err);
+    //     this.alert.error('Something went wrong');
+    //   })
+    console.log(this.registerForm.get('password'))
+  }
+
+  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
+    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
+    const inputFocus$ = this.focus$;
+
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map((term: string) => (term === '' ? this.countries
+        : this.countries.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10))
+    );
   }
 
 }
+

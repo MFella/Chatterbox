@@ -13,53 +13,95 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <input type="text" class="form-control" id="name" formControlName="name"
-                    aria-describedby="nameHelp" required >
-                    <label for="nameLabel">Name</label>
+                    aria-describedby="nameHelp" required 
+                    [ngClass]="{'is-invalid': this.registerForm.get('name')?.status === 'INVALID' && this.registerForm.get('name')?.touched,
+                  'is-valid': this.registerForm.get('name')?.status === 'VALID'}"
+                    >
+                    <label for="nameLabel">Name
+                    </label>
+                    <div class="invalid-feedback">
+                      Only latin letters are available.
+                    </div>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <input type="text" class="form-control" id="surname" formControlName="surname"
-                    aria-describedby="emailHelp" required>
+                    aria-describedby="emailHelp" required
+                    [ngClass]="{'is-invalid': this.registerForm.get('surname')?.status === 'INVALID' && this.registerForm.get('surname')?.touched,
+                    'is-valid': this.registerForm.get('surname')?.status === 'VALID'}"
+                    >
                     <label for="surnameLabel">Surname</label>
+                    <div class="invalid-feedback">
+                      Only latin letters are available.
+                    </div>
                   </div>
                 </div>
-                <div class="col-md-6 pt-2">
-                  <div class="form-group">
-                    
+                <div class="col-md-6 pt-4">
+                  <div class="form-group">                    
                     <input type="date" class="form-control" id="dateOfBirth" formControlName="dateOfBirth"
-                     aria-describedby="emailHelp" required>
+                     aria-describedby="emailHelp" required
+                     [ngClass]="{'is-invalid': (this.registerForm.get('dateOfBirth')?.status === 'INVALID' && this.registerForm.get('dateOfBirth')?.touched)  || 
+                     (this.registerForm.errors?.notFullAge && this.registerForm.get('dateOfBirth')?.touched),
+                     'is-valid': this.registerForm.get('dateOfBirth')?.status === 'VALID'}"
+                     >
                     <label for="dateLabel">Date of birth</label>
                     <small id="dateHelp" class="form-text text-muted">You must be of legal age.</small>
                   </div>
                 </div>
-                <div class="col-md-6 pt-2">
+                <div class="col-md-6 pt-4">
                   <div class="form-group">
-                    <input type="text" class="form-control" id="country" formControlName="country"
-                    aria-describedby="countryHelp" required>
+                    <!-- <input type="text" class="form-control" id="country" formControlName="country"
+                    aria-describedby="countryHelp" required> -->
+                    <input
+                    id="typeahead-focus"
+                    type="text"
+                    class="form-control"
+                    formControlName="country"
+                    
+                    [ngbTypeahead]="search"
+                    (focus)="focus$.next($any($event).target.value)"
+                    (click)="click$.next($any($event).target.value)"
+                    #instance="ngbTypeahead"
+                    [ngClass]="{'is-invalid': this.registerForm.get('country')?.status === 'INVALID' && this.registerForm.get('country')?.touched,
+                    'is-valid': this.registerForm.get('country')?.status === 'VALID'}"
+                    />
                     <label for="countryLabel">Country</label>
+                    <div class="invalid-feedback">
+                      Only latin letters are available.
+                    </div>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">                  
                     <input type="text" class="form-control" id="email" formControlName="email"
-                    aria-describedby="emailHelp" required>
+                    aria-describedby="emailHelp" required
+                    [ngClass]="{'is-invalid': (this.registerForm.get('email')?.status === 'INVALID' && this.registerForm.get('email')?.touched),
+                    'is-valid': this.registerForm.get('email')?.status === 'VALID'}"
+                    >
                     <label for="emailLabel">Email</label>
-                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                    <small id="emailHelp" class="form-text text-muted">Try to keep an appropriate email format.</small>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">   
                     <input type="text" class="form-control" id="login" formControlName="login"
-                    aria-describedby="emailHelp" required>
+                    aria-describedby="emailHelp" required
+                    [ngClass]="{'is-invalid': this.registerForm.get('login')?.status === 'INVALID' && this.registerForm.get('login')?.touched,
+                    'is-valid': this.registerForm.get('login')?.status === 'VALID'}"
+                    >
+                    <!--(change)="checkAvailability(this.registerForm.get('login'))"-->
                     <label for="exampleInputEmail1">Your login</label>
-                    <small id="emailHelp" class="form-text text-muted">Your login will be also your nick</small>
+                    <small id="emailHelp" class="form-text text-muted">Only letters and numbers are available.</small>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">               
                     <input type="password" class="form-control" id="password" formControlName="password"
-                    aria-describedby="emailHelp" required>
+                    aria-describedby="emailHelp" required
+                    [ngClass]="{'is-invalid': this.registerForm.get('password')?.status === 'INVALID' && this.registerForm.get('password')?.touched,
+                    'is-valid': this.registerForm.get('password')?.status === 'VALID'}"
+                    >
                     <label for="exampleInputEmail1">Password</label>
                     <small id="passwordHelp" class="form-text text-muted">At least length of 6, latin letters, at least 1 number and 1 capital letter.</small>
                   </div>
@@ -67,7 +109,11 @@
                 <div class="col-md-6">
                   <div class="form-group">    
                     <input type="password" class="form-control" id="repeatPassword" formControlName="repeatPassword"
-                    aria-describedby="emailHelp" required>
+                    aria-describedby="emailHelp" required
+                    [ngClass]="{'is-invalid': (this.registerForm.get('repeatPassword')?.status === 'INVALID' && this.registerForm.get('repeatPassword')?.touched) ||
+                    (this.registerForm.errors?.mismatchPassword && this.registerForm.get('repeatPassword')?.touched),
+                    'is-valid': this.registerForm.get('repeatPassword')?.status === 'VALID'}"
+                    >
                     <label for="exampleInputEmail1">Repeat password</label>
                     <small id="repeatpasswordHelp" class="form-text text-muted">Passwords must match.</small>
                   </div>

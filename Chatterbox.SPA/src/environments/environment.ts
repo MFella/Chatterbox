@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  backUrl: 'http://localhost:3100/'
+  backUrl: 'http://localhost:3100/',
+  countriesUrl: 'https://restcountries.eu/rest/v2/all?fields=name'
 };
 
 /*
