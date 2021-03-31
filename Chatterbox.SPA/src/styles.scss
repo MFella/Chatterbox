@@ -2,7 +2,7 @@
 @import "~bootswatch/dist/minty/variables";
 @import "~bootstrap/scss/bootstrap";
 @import "~bootswatch/dist/minty/bootswatch";
-
+@import '~ngx-toastr/toastr';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -16,7 +16,7 @@ export class AuthService {
     headers.append('Content-Type', 'application/json');
 
 
-    return this.http.post(env.backUrl, userForRegisterDto, {headers});
+    return this.http.post(env.backUrl + 'auth/register', userForRegisterDto, {headers});
 
   }
 
