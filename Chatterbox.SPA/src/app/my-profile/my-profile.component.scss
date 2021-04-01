@@ -1,0 +1,39 @@
+.container
+{
+    padding-top: 6rem;
+}
+
+.user_avatar
+{
+    width: 80%;
+    border: 1px rgba(0,0,0,.3) solid;
+    border-radius: 1.4rem;
+    //margin: 1rem;
+    margin-left: 1rem;
+}
+
+.card-header
+{
+    h3
+    {
+        &::before, &::after
+        {
+            display: inline-block;
+            content: '';
+            width: 10rem !important;
+            border-bottom: .2rem solid rgba(0,0,0,.2);
+            margin-bottom: .6rem;
+            //animation: sizedLined 3s linear  infinite;
+        }
+
+        &::before
+        {
+            margin-right: 2rem;
+        }
+
+        &::after
+        {
+            margin-left: 2rem;    
+        }
+    }
+}

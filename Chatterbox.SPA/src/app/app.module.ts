@@ -13,16 +13,19 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ToastrModule } from 'ngx-toastr';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbHighlight, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AuthInterceptor } from './_services/auth.interceptor';
+import { MyProfileComponent } from './my-profile/my-profile.component';
 
 @NgModule({
-  declarations: [				
+  declarations: [					
     AppComponent,
       NavComponent,
       HomeComponent,
       LoginComponent,
-      RegisterComponent
+      RegisterComponent,
+      MyProfileComponent
    ],
   imports: [
     BrowserModule,
@@ -37,7 +40,13 @@ import { NgbHighlight, NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ToastrModule.forRoot(),
     NgbModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { 

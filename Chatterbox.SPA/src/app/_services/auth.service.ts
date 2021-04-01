@@ -14,7 +14,9 @@ import { AlertService } from './alert.service';
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, private alert: AlertService) { }
+  constructor(private http: HttpClient, private alert: AlertService) { 
+    this.userStored = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '{}'): null;
+  }
 
   userStored!: UserStored | null;
 
@@ -67,7 +69,7 @@ export class AuthService {
 
   private setSession(authRes: any)
   {
-    this.userStored = authRes.user;
+    this.userStored = authRes.resp.user;
     const expireDate = moment().add(authRes.resp.expiresIn, 'second');
     localStorage.setItem('user', JSON.stringify(this.userStored));
     localStorage.setItem('id_token', authRes.resp.access_token);

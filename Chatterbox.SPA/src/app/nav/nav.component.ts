@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { faUsers, faListAlt, faQuestion, faSignInAlt, faUserTie, faUserPlus, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faListAlt, faQuestion, faSignInAlt, 
+  faUserTie, faUserPlus, faDoorOpen, faIdBadge, faCommentDots, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-nav',
@@ -8,15 +10,13 @@ import { faUsers, faListAlt, faQuestion, faSignInAlt, faUserTie, faUserPlus, Ico
 })
 export class NavComponent implements OnInit {
 
-  public icons: Array<IconDefinition> = [faUserTie, faListAlt, faSignInAlt, faQuestion, faUsers, faUserPlus]
+  public icons: Array<IconDefinition> = [faUserTie, faListAlt, faSignInAlt, faQuestion, faUsers, faUserPlus, faDoorOpen, faIdBadge, faCommentDots]
 
 
-  constructor() {}
+  constructor(public authServ: AuthService) {}
 
   ngOnInit()
   {
 
   }
-
-
 }
