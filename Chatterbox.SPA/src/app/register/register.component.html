@@ -27,7 +27,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <input type="text" class="form-control" id="surname" formControlName="surname"
-                    aria-describedby="emailHelp" required
+                    aria-describedby="surnameHelp" required
                     [ngClass]="{'is-invalid': this.registerForm.get('surname')?.status === 'INVALID' && this.registerForm.get('surname')?.touched,
                     'is-valid': this.registerForm.get('surname')?.status === 'VALID'}"
                     >
@@ -40,7 +40,7 @@
                 <div class="col-md-6 pt-4">
                   <div class="form-group">                    
                     <input type="date" class="form-control" id="dateOfBirth" formControlName="dateOfBirth"
-                     aria-describedby="emailHelp" required
+                     aria-describedby="dateOfBirthHelp" required
                      [ngClass]="{'is-invalid': (this.registerForm.get('dateOfBirth')?.status === 'INVALID' && this.registerForm.get('dateOfBirth')?.touched)  || 
                      (this.registerForm.errors?.notFullAge && this.registerForm.get('dateOfBirth')?.touched),
                      'is-valid': this.registerForm.get('dateOfBirth')?.status === 'VALID'}"
@@ -80,7 +80,11 @@
                     'is-valid': this.registerForm.get('email')?.status === 'VALID'}"
                     >
                     <label for="emailLabel">Email</label>
-                    <small id="emailHelp" class="form-text text-muted">Try to keep an appropriate email format.</small>
+                    <small id="emailHelp" class="form-text text-muted">Try to keep an appropriate email format.
+                      <span class="text-danger" *ngIf="this.registerForm.get('email')?.errors?.emailNotAvailable">
+                        Email already exists.
+                      </span>
+                    </small>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -92,7 +96,11 @@
                     >
                     <!--(change)="checkAvailability(this.registerForm.get('login'))"-->
                     <label for="exampleInputEmail1">Your login</label>
-                    <small id="emailHelp" class="form-text text-muted">Only letters and numbers are available.</small>
+                    <small id="emailHelp" class="form-text text-muted">Only letters and numbers are available.
+                      <span class="text-danger" *ngIf="this.registerForm.get('login')?.errors?.loginNotAvailable">
+                        Login already exists!
+                      </span>
+                    </small>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -124,7 +132,6 @@
                 [disabled]="this.registerForm.invalid"
                 >Submit</button>
               </div>
-
           </form>
         </div>
       </div>

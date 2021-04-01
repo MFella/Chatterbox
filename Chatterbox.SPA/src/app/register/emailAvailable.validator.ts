@@ -3,15 +3,15 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../_services/auth.service';
 
-export class LoginAvailableValidator
+export class EmailAvailableValidator
 {
     static checkAvailability(authServ: AuthService): AsyncValidatorFn
     {
-        return (loginCtrl: AbstractControl | null): Observable<ValidationErrors | null> => {
-            return authServ.checkAvailabilityOfLogin(loginCtrl?.value).pipe(
+        return (emailCtrl: AbstractControl | null): Observable<ValidationErrors | null> => {
+            return authServ.checkAvailabilityOfEmail(emailCtrl?.value).pipe(
                 map(
                     (res: boolean) => {
-                        return res ? null : {'loginNotAvailable': true}
+                        return res ? null : {'emailNotAvailable': true}
                     })
             )
         }

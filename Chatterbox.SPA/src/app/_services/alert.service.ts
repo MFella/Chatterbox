@@ -19,5 +19,10 @@ constructor(private alert: ToastrService) { }
     this.alert.error(msg, 'Error');
   }
 
+  info(msg: string): void
+  {
+    this.alert.info(msg, 'Info');
+  }
+
 }
 

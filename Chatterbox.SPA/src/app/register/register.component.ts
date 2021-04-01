@@ -6,6 +6,7 @@ import { merge, Observable, of, OperatorFunction, Subject } from 'rxjs';
 import { debounceTime, filter, map, distinctUntilChanged } from 'rxjs/operators';
 import { AlertService } from '../_services/alert.service';
 import { AuthService } from '../_services/auth.service';
+import { EmailAvailableValidator } from './emailAvailable.validator';
 import { LoginAvailableValidator } from './loginAvailable.validator';
 
 @Component({
@@ -46,10 +47,12 @@ export class RegisterComponent implements OnInit {
       dateOfBirth: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), 
         Validators.pattern(/^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i)]],
       country: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(100), Validators.pattern(/^[A-Za-z]+$/)]],
-      email: ['', [Validators.required, 
-        Validators.pattern(/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i)]],
+      email: ['', { validators: [Validators.required, 
+        Validators.pattern(/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i)],
+      asyncValidators: [EmailAvailableValidator.checkAvailability(this.authServ)]}],
       login: ['', { validators: [Validators.required, Validators.minLength(5), Validators.maxLength(25), 
-        Validators.pattern(/^[a-zA-Z0-9_.-]*$/), this.checkAvailability(this.registerForm.get('login'),this.authServ)]}],
+        Validators.pattern(/^[a-zA-Z0-9_.-]*$/)],
+      asyncValidators: [LoginAvailableValidator.checkAvailability(this.authServ)]}],
         // have to work on it
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30), Validators.pattern(/^(?=\D*\d)(?=.*?[a-zA-Z]).*[\W_].*$/)]],
       repeatPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30), Validators.pattern(/^(?=\D*\d)(?=.*?[a-zA-Z]).*[\W_].*$/)]]
@@ -84,27 +87,27 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  checkAvailability(login: AbstractControl | null, serv: AuthService): null | Object | undefined
-  {
+  // checkAvailability(login: AbstractControl | null, serv: AuthService): any 
+  // {
 
-    console.log(login);
-    if(login?.status.normalize() === 'VALID')
-    {
+  //   console.log(login);
+  //   if(login?.status.normalize() === 'VALID')
+  //   {
 
-      serv.checkAvailabilityOfLogin(login?.value)
-        .subscribe((res: boolean) =>
-        {
+  //     serv.checkAvailabilityOfLogin(login?.value)
+  //       .subscribe((res: boolean) =>
+  //       {
 
-          return res? null:
-          {
-            'loginNotAvailable': true
-          }
-        });
+  //         return res? null:
+  //         {
+  //           'loginNotAvailable': true
+  //         }
+  //       });
 
-        return null;
+  //       return null;
 
-    } else return null;
-  }
+  //   } else return null;
+  // }
 
   submit(): void
   {
@@ -120,7 +123,7 @@ export class RegisterComponent implements OnInit {
     //     console.log(err);
     //     this.alert.error('Something went wrong');
     //   })
-    console.log(this.registerForm.get('password'))
+    console.log(this.registerForm.get('login')?.errors?.loginNotAvailable)
   }
 
   search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {

@@ -1,6 +1,7 @@
 import {Body, Controller, Get, HttpStatus, Post, Query, Req, Res} from '@nestjs/common';
 import { User } from 'src/users/user.entity';
 import { AuthService } from './auth.service';
+import { CheckEmailDto } from './dtos/checkEmail.dto';
 import { CheckLoginDto } from './dtos/checkLogin.dto';
 import { UserForLoginDto } from './dtos/userForLogin.dto';
 import { UserForRegisterDto } from './dtos/userForRegister.dto';
@@ -18,6 +19,12 @@ export class AuthController {
     async checkLoginAccess(@Query() query: CheckLoginDto): Promise<boolean>
     {
         return await this.authServ.checkLoginAccess(query.login);
+    }
+
+    @Get('check-email')
+    async checkEmailAccesss(@Query() query: CheckEmailDto): Promise<boolean>
+    {
+        return await this.authServ.checkEmailAccess(query.email);
     }
 
     @Post('register')

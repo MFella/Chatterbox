@@ -7,6 +7,7 @@ import {Keccak} from 'sha3';
 import { UserForLoginDto } from './dtos/userForLogin.dto';
 import { UserToReturnDto } from './dtos/userToReturn.dto';
 import { JwtService } from '@nestjs/jwt';
+import { jwtConstans } from './constans';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +22,11 @@ export class AuthService {
     async checkLoginAccess(login: string)
     {
         return !await this.userRepository.findOne({login: login});
+    }
+
+    async checkEmailAccess(email: string)
+    {
+        return !await this.userRepository.findOne({email});
     }
 
     async registerUser(userForRegisterDto: UserForRegisterDto)
@@ -102,6 +108,7 @@ export class AuthService {
             const payload = {login: user.login, _id: user._id.toString()}
             const details = {
                 access_token: this.jwtServ.sign(payload),
+                expiresIn: jwtConstans.expiresIn,
                 user
             };
             return details;
