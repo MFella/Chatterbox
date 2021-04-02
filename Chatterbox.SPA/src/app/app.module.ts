@@ -17,15 +17,17 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbHighlight, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthInterceptor } from './_services/auth.interceptor';
 import { MyProfileComponent } from './my-profile/my-profile.component';
+import { RoomListComponent } from './room-list/room-list.component';
 
 @NgModule({
-  declarations: [					
+  declarations: [						
     AppComponent,
       NavComponent,
       HomeComponent,
       LoginComponent,
       RegisterComponent,
-      MyProfileComponent
+      MyProfileComponent,
+      RoomListComponent
    ],
   imports: [
     BrowserModule,
