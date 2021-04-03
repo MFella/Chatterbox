@@ -1,0 +1,26 @@
+@mixin round_border_card
+{
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+
+.card
+{
+    padding: 0!important;
+    @include round_border_card;
+    min-height: 80vh;
+
+    .card-footer{
+
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+        @include round_border_card;
+
+
+        min-height:4rem;
+        .btn
+        {
+            //transform: scale(1.6) ;
+        }
+    }
+}

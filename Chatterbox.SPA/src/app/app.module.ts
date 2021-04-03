@@ -18,16 +18,22 @@ import { NgbHighlight, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthInterceptor } from './_services/auth.interceptor';
 import { MyProfileComponent } from './my-profile/my-profile.component';
 import { RoomListComponent } from './room-list/room-list.component';
+import { ChatRoomComponent } from './chat-room/chat-room.component';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import {environment} from '../environments/environment'
+
+const config: SocketIoConfig = {url: `${environment.socketBackUrl}`, options: {transports: ['websocket'], allowUpgrades: true}};
 
 @NgModule({
-  declarations: [						
+  declarations: [							
     AppComponent,
       NavComponent,
       HomeComponent,
       LoginComponent,
       RegisterComponent,
       MyProfileComponent,
-      RoomListComponent
+      RoomListComponent,
+      ChatRoomComponent
    ],
   imports: [
     BrowserModule,
@@ -40,7 +46,8 @@ import { RoomListComponent } from './room-list/room-list.component';
     FlexLayoutModule,
     FontAwesomeModule,
     ToastrModule.forRoot(),
-    NgbModule
+    NgbModule,
+    SocketIoModule.forRoot(config)
   ],
   providers: [
     {

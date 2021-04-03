@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
+import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -7,16 +8,25 @@ import { map } from 'rxjs/operators';
 })
 export class ChatService {
 
-  constructor(private socket: Socket) { }
+  constructor(public socket: Socket) { }
+
+  selectedRoom: BehaviorSubject<string> = new BehaviorSubject("");
 
   sendMessage(msg: string)
   {
-    this.socket.emit('message', msg);
+    console.log(`Msg send: ${msg}`);
+    this.socket.emit('msgToServer', msg);
   }
 
-  getMessage()
+  getMessages()
   {
-    return this.socket.fromEvent('message').pipe(map((data: any) => data.msg))
+    console.log("Message should be received")
+    return this.socket.fromEvent('afterConnection').pipe(map((data: any) => data.msg))
   }
 
+  joinRoom(room: string)
+  {
+    this.socket.emit('joinRoom', room);
+  }
+  
 }
