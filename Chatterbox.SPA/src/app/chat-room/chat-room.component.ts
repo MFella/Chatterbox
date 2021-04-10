@@ -19,20 +19,18 @@ export class ChatRoomComponent implements OnInit {
     this.chatServ.selectedRoom.subscribe((res: string) =>
     {
       this.currentRoom = res;
-      this.chatServ.sendMessage(res);
 
-      if(res.length !== 0)
+      console.log("wow")
+      this.chatServ.sendMessage("Are you serious?");
+      this.chatServ.getMessages()
+      .subscribe((message: string) =>
       {
-        this.chatServ.getMessages();
-      }
+        console.log(message);
+      })
 
     });
 
-    this.chatServ.getMessages().subscribe((msg: any) =>
-    {
-      console.log(`Received msg: ${msg}`);
-    });
-    this.chatServ.sendMessage("Are you serious?");
+
   }
 
 }

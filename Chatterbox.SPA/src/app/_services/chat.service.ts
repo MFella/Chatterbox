@@ -1,32 +1,36 @@
 import { Injectable } from '@angular/core';
-import { Socket } from 'ngx-socket-io';
-import { BehaviorSubject } from 'rxjs';
+import * as io from 'socket.io-client';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ChatService {
+export class ChatService{
 
-  constructor(public socket: Socket) { }
+  private socket!: any;
+
+  constructor() {
+    this.socket = io(environment.socketBackUrl )
+  }
 
   selectedRoom: BehaviorSubject<string> = new BehaviorSubject("");
 
-  sendMessage(msg: string)
+
+  public sendMessage(msg: string)
   {
-    console.log(`Msg send: ${msg}`);
     this.socket.emit('msgToServer', msg);
   }
 
-  getMessages()
+  public getMessages = () => 
   {
-    console.log("Message should be received")
-    return this.socket.fromEvent('afterConnection').pipe(map((data: any) => data.msg))
+    return Observable.create((observer: any) =>
+    {
+      this.socket.on('msgToClient', (msg: string) =>
+      {
+        observer.next(msg);
+      })
+    })
   }
-
-  joinRoom(room: string)
-  {
-    this.socket.emit('joinRoom', room);
-  }
-  
 }

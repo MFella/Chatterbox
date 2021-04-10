@@ -6,19 +6,22 @@ import { Socket, Server } from 'socket.io';
 export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
 
     @WebSocketServer() server: Server;
+    
     private logger: Logger = new Logger('AppGateway');
 
     @SubscribeMessage('msgToServer')
     async handleMessage(@MessageBody() data: string): Promise<void>
     {
-        console.log(data);
+        //console.log(data);
         //this.server.emit('msgToClient', data);
-        this.server.sockets.emit('msgToClient', data);
+        console.log(data);
+        this.server.emit('msgToClient', data);
     }
 
     afterInit(server: Server)
     {
         this.logger.log('Init');
+        server.emit('afterConnection', "CO TAM DOKTORKU");
     }
 
     handleDisconnect(client: Socket)

@@ -21,8 +21,9 @@ import { RoomListComponent } from './room-list/room-list.component';
 import { ChatRoomComponent } from './chat-room/chat-room.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import {environment} from '../environments/environment'
+import { ChatService } from './_services/chat.service';
 
-const config: SocketIoConfig = {url: `${environment.socketBackUrl}`, options: {transports: ['websocket'], allowUpgrades: true}};
+const config: SocketIoConfig = {url: `${environment.socketBackUrl}/chat`, options: {transports: ['websocket'], allowUpgrades: true}};
 
 @NgModule({
   declarations: [							
@@ -54,7 +55,8 @@ const config: SocketIoConfig = {url: `${environment.socketBackUrl}`, options: {t
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
+    ChatService
   ],
   bootstrap: [AppComponent]
 })
