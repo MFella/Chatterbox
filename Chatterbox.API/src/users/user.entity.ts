@@ -11,7 +11,7 @@ export class User
         nullable: false
     })
     name: string;
-
+ 
     @Column({
         nullable: false
     })

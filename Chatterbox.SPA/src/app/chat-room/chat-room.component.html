@@ -14,9 +14,14 @@
           <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
           <a href="#" class="btn btn-primary">Go somewhere</a>
         </div>
-        <div class="card-footer d-flex justify-content-between">
+        <div class="card-footer d-flex justify-content-between align-items-center">
           <button class="btn btn-primary">Send <fa-icon [icon]="icons[0]"></fa-icon></button>
-          <button class="btn btn-outline-info">Join <fa-icon [icon]="icons[2]"></fa-icon></button>
+          <button class="btn btn-outline-info"
+          *ngIf="this.currentRoom.length == 0"
+          >Join <fa-icon [icon]="icons[2]"></fa-icon></button>
+          <input type="text" class="form-control mx-2 message_input" id="message_input" placeholder="Type something ..."
+          *ngIf="this.currentRoom.length !== 0"
+          >
           <button class="btn btn-warning">Leave <fa-icon [icon]="icons[1]"></fa-icon></button>
         </div>
       </div>
