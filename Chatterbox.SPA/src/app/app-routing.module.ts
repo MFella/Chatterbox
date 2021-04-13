@@ -5,13 +5,14 @@ import { LoginComponent } from './login/login.component';
 import { MyProfileComponent } from './my-profile/my-profile.component';
 import { RegisterComponent } from './register/register.component';
 import { RoomListComponent } from './room-list/room-list.component';
+import { ChannelListResolver } from './_resolvers/channel-list.resolver';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'my-profile', component: MyProfileComponent},
-  {path: 'room-list', component: RoomListComponent}
+  {path: 'room-list', component: RoomListComponent, resolve: {rooms: ChannelListResolver}}
 ];
 
 @NgModule({

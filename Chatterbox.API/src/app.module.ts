@@ -5,8 +5,8 @@ import { AppController } from './app.controller';
 import { AppGateway } from './app.gateway';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { ChannelModule } from './seeders/channel/channel.module';
-import { SeederModule } from './seeders/seeder.module';
+import { ChannelModule } from "./channel/channel.module"
+import { SeederModule } from './channel/seeder/seeder.module';
 
 @Module({
   imports: [

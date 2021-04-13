@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { Channel } from "../models/channel/entities/channel.entity";
-import { ChannelService } from "./channel/channel.service";
+import { Channel } from "../channel.entity"
+import { ChannelService } from "../channel.service"
 
 @Injectable({})
 export class Seeder 

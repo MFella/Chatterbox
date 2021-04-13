@@ -1,5 +1,5 @@
 import { Logger, Module } from "@nestjs/common";
-import { ChannelModule } from "./channel/channel.module";
+import { ChannelModule } from "../channel.module";
 import { Seeder } from "./seeder";
 
 @Module({

@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Socket, Server } from 'socket.io';
 
 @WebSocketGateway(3101)
@@ -17,6 +17,22 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         console.log(data);
         this.server.emit('msgToClient', data);
     }
+
+    @SubscribeMessage('join')
+    async joinToRoom(@ConnectedSocket()client: Socket, @MessageBody() room: string): Promise<void>
+    {
+        //console.log(client);
+        client.join(room);
+        this.server.emit('afterJoin', room);
+    }
+
+    @SubscribeMessage('left')
+    async leftRoom(@ConnectedSocket() client: Socket, @MessageBody() room: string): Promise<void>
+    {
+        client.leave(room);
+        this.server.emit('afterLeft', room);
+    }
+    
 
     afterInit(server: Server)
     {

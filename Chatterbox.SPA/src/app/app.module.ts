@@ -22,6 +22,7 @@ import { ChatRoomComponent } from './chat-room/chat-room.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import {environment} from '../environments/environment'
 import { ChatService } from './_services/chat.service';
+import { ChannelListResolver } from './_resolvers/channel-list.resolver';
 
 const config: SocketIoConfig = {url: `${environment.socketBackUrl}/chat`, options: {transports: ['websocket'], allowUpgrades: true}};
 
@@ -51,13 +52,14 @@ const config: SocketIoConfig = {url: `${environment.socketBackUrl}/chat`, option
     SocketIoModule.forRoot(config)
   ],
   providers: [
+    ChannelListResolver,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
     },
     ChatService
-  ],
+  ], 
   bootstrap: [AppComponent]
 })
 export class AppModule { 

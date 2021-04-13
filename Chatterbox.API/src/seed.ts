@@ -1,9 +1,9 @@
 import { Logger } from "@nestjs/common";
 import { NestApplicationContext, NestFactory } from "@nestjs/core";
 import { AppModule } from "src/app.module";
-import { ChannelModule } from "./seeders/channel/channel.module";
-import { Seeder } from "./seeders/seeder";
-import { SeederModule } from "./seeders/seeder.module";
+import { ChannelModule } from "./channel/channel.module"
+import { Seeder } from "./channel/seeder/seeder";
+import { SeederModule } from "./channel/seeder/seeder.module";
 
 async function bootstrap()
 {

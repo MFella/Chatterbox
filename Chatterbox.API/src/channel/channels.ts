@@ -1,4 +1,4 @@
-import { Channel } from "../../models/channel/interfaces/channel.interface";
+import { Channel } from "./dto/channel.interface";
 
 export const Channels: Array<Channel> = [
     {

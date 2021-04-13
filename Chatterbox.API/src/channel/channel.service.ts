@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Channel } from "../../models/channel/entities/channel.entity";
-import * as ChannelModel from "../../models/channel/interfaces/channel.interface";
+import { Channel } from "./channel.entity";
+import * as ChannelModel from "./dto/channel.interface"
 import {Channels} from './channels';
 
 @Injectable()
@@ -12,6 +12,12 @@ export class ChannelService{
         @InjectRepository(Channel)
         private channelRepo: Repository<Channel>
     ){}
+
+
+    async getRoomList(): Promise<Channel[]>
+    {
+        return await this.channelRepo.find({});
+    }
 
     async create(): Promise<Promise<Channel>[]>
     {

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Data } from '@angular/router';
+import { PartialObserver } from 'rxjs';
+import { RoomDto } from '../dtos/room.dto';
 import { ChatService } from '../_services/chat.service';
 
 @Component({
@@ -8,16 +11,21 @@ import { ChatService } from '../_services/chat.service';
 })
 export class RoomListComponent implements OnInit {
 
-  roomNames: Array<string> = ["CH1", "CH2", "CH3", "CH4", "CH5"];
+  //roomNames: Array<string> = ["CH1", "CH2", "CH3", "CH4", "CH5"];
+  rooms!: RoomDto[];
 
-  constructor(public chatServ: ChatService) { }
+  constructor(public chatServ: ChatService, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.route.data.subscribe((res: Data) =>
+    { 
+      this.rooms = res.rooms;
+    })
   }
 
-  selectRoom(value: string)
+  selectRoom(chatRoom: RoomDto)
   {
-    this.chatServ.selectedRoom.next(value);
+    this.chatServ.selectedRoom.next(chatRoom);
   }
 
 }
