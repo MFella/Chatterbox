@@ -15,6 +15,7 @@ export class AuthController {
     )
     {}
 
+
     @Get('check-login')
     async checkLoginAccess(@Query() query: CheckLoginDto): Promise<boolean>
     {

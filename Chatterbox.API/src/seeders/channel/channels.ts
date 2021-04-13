@@ -1,4 +1,4 @@
-import { Channel } from "./channel.interface";
+import { Channel } from "../../models/channel/interfaces/channel.interface";
 
 export const Channels: Array<Channel> = [
     {

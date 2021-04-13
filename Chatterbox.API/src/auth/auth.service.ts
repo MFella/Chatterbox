@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
-import { ObjectID, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { UserForRegisterDto } from './dtos/userForRegister.dto';
 import {Keccak} from 'sha3';
 import { UserForLoginDto } from './dtos/userForLogin.dto';

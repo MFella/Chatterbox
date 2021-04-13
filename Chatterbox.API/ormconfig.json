@@ -4,7 +4,7 @@
     "host": "localhost",
     "port": 27017,
     "database": "chatterbox",
-    "entities": ["dist/**/*.entity.js"],
+    "entities": ["dist/**/*.entity.js", "dist/**/**/*.entity{.ts,.js}"],
     "synchronize": true,
     "useUnifiedTopology": true
   }
