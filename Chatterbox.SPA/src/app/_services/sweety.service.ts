@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
 import swal from 'sweetalert';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SweetyService {
 
-  constructor() { }
 
-  submitNickname(callback: CallableFunction): boolean
+
+  constructor(private authServ: AuthService) { }
+
+  async submitNickname(): Promise<boolean | void> 
   {
+    
     swal("???", {
       title: 'Who are you?',
       text: "To be able to talk, you need to provide a unique nickname",
@@ -19,15 +23,24 @@ export class SweetyService {
     } as any)
     .then((value: string) =>
     {
-      const res = callback(value);
-      return res;
+      this.authServ.checkNickname(value)
+      .subscribe((res: any) =>
+      {
+        console.log(res);
+
+      }, (err: any) =>
+      {
+        return false;
+      })
+      //return res;
     })
     .catch((err: Error) =>
     {
+      console.log(err);
       return false;
     })
 
-    return false;
+    //return false;
   }
 
 

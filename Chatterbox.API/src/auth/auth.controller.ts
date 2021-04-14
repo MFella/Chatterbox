@@ -1,4 +1,4 @@
-import {Body, Controller, Get, HttpStatus, Post, Query, Req, Res} from '@nestjs/common';
+import {Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, Res} from '@nestjs/common';
 import { User } from 'src/users/user.entity';
 import { AuthService } from './auth.service';
 import { CheckEmailDto } from './dtos/checkEmail.dto';
@@ -7,6 +7,7 @@ import { UserForLoginDto } from './dtos/userForLogin.dto';
 import { UserForRegisterDto } from './dtos/userForRegister.dto';
 import { UserToReturnDto } from './dtos/userToReturn.dto';
 import {RealIP} from 'nestjs-real-ip';
+import { TrackLogoutDto } from './dtos/trackLogout.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -59,8 +60,20 @@ export class AuthController {
         {
             res.status(HttpStatus.OK).send({'result': true, 'msg': 'Cant log in'});
         }           
-
-
     }
 
+    @Get('track-logout')
+    @HttpCode(200)
+    async trackLogout(@Query() query: TrackLogoutDto, @Res() res)
+    {   
+        const result = await this.authServ.trackLogout(query.login);
+        res.send({'res': result});
+    }
+
+    @Get('check-nickname')
+    async checkNickname(@Query() query: CheckLoginDto, @Res() res)
+    {
+        const result = await this.authServ.checkNameForRoom(query.login);
+        res.send({'res': result});
+    }
 }

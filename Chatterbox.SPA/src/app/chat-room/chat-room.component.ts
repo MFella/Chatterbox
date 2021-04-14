@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faEnvelope, faHandshake, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { RoomDto } from '../dtos/room.dto';
+import { AuthService } from '../_services/auth.service';
 import { ChatService } from '../_services/chat.service';
+import { SweetyService } from '../_services/sweety.service';
 
 @Component({
   selector: 'app-chat-room',
@@ -16,7 +18,8 @@ export class ChatRoomComponent implements OnInit {
 
   public icons: Array<IconDefinition> = [faEnvelope, faSignOutAlt, faHandshake];
 
-  constructor(public chatServ: ChatService) { }
+  constructor(public chatServ: ChatService, private authServ: AuthService,
+    private sweety: SweetyService) { }
 
   ngOnInit() {
 
@@ -36,15 +39,24 @@ export class ChatRoomComponent implements OnInit {
     });
   }
 
-  public joinRoom()
+  public async joinRoom()
   {
-    this.chatServ.joinRoom(this.pickedRoom!._id);
-    this.chatServ.getConfirmationOfJoin()
-    .subscribe((room: string) =>
+
+    if(this.authServ.userStored === null)
     {
-      console.log(`Connected to room: ${room}`);
-      this.currentRoom = room;
-    })
+      const result = await this.sweety.submitNickname();
+      console.log(result);
+
+    }else{
+
+      this.chatServ.joinRoom(this.pickedRoom!._id);
+      this.chatServ.getConfirmationOfJoin()
+      .subscribe((room: string) =>
+      {
+        console.log(`Connected to room: ${room}`);
+        this.currentRoom = room;
+      })
+    }
   }
 
 }

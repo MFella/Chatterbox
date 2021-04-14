@@ -116,6 +116,8 @@ export class AuthService {
             };
 
             const active = await this.activeRepo.findOne({loginOrNick: user.login});
+            let today = new Date();
+            today.setHours(today.getHours() + 1);
 
             if(active)
             {
@@ -125,16 +127,21 @@ export class AuthService {
                     {
                         ...rest,
                         lastLogin: new Date(),
+                        isLoggedIn: true,
+                        timeOfLogout: today,
                         ip
                     })
                 await this.activeRepo.update(active._id, toUpdate)
 
             }else
             {
+
                 const toCreate = Object.assign({},
                 {
                     loginOrNick: user.login,
                     lastLogin: new Date(),
+                    isLoggedIn: true,
+                    timeOfLogout: today,
                     ip
                 });
 
@@ -143,6 +150,55 @@ export class AuthService {
 
             return details;
 
+        }
+
+    }
+
+    async checkNameForRoom(login: string): Promise<boolean>
+    {
+        try{
+            const userFromUsers = await this.userRepository.findOne({login: login});
+            const userFromAct = await this.activeRepo.findOne({loginOrNick: login});
+
+            if(userFromAct || userFromUsers)
+            {
+                return false;
+            }
+
+            return true;
+
+        }
+        catch(e)
+        {
+            //throw new HttpExeption()...
+            return false;
+        }
+    }
+
+    async trackLogout(login: string): Promise<boolean>
+    {
+        // maybe blacklist token? ... 
+
+        try{
+            const actUserFromRepo = await this.activeRepo.findOne({loginOrNick: login});
+
+            if(actUserFromRepo)
+            { 
+                const{isLoggedIn, ...rest} = actUserFromRepo;  
+                const toUpdate = Object.assign({}, {
+                    ...rest,
+                    isLoggedIn: false
+                })
+                await this.activeRepo.update(login, toUpdate);
+
+                return true;
+            }else
+            {
+                return false;
+            }
+        }catch(e)
+        {
+            return false;
         }
 
     }

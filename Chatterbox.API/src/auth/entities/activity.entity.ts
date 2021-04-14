@@ -1,4 +1,4 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
+import {BeforeInsert, BeforeUpdate, Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
 
 @Entity()
 export class Activity
@@ -31,7 +31,8 @@ export class Activity
 
     @Column({
         nullable: false,
-        default: true
+        default: true,
+        type: 'boolean'
     })
     isLoggedIn: boolean;
 
@@ -40,7 +41,11 @@ export class Activity
     updateIsLoggedIn()
     {
         this.isLoggedIn = true;
-        this.timeOfLogout.setDate(new Date().getDate() + 1);
+        //that one
+        this.timeOfLogout.setHours(this.lastLogin.getHours() + 1)
+        setTimeout(() =>
+        {
+            this.isLoggedIn = false;
+        }, 1000);
     }
-    
 }

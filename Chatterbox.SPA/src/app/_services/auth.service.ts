@@ -70,7 +70,14 @@ export class AuthService {
   checkNickname(nickname: string): Observable<boolean>
   {
 
-    return this.http.get<boolean>(env.backUrl + 'auth/checkNickname');
+    return this.http.get<boolean>(env.backUrl + `auth/check-nickname?login=${nickname}`)
+    .pipe(
+      map((res: any) =>
+      {
+        console.log(`Res from checkNickname: ${res}`);
+        return res;
+      })
+    )
   }
 
   private setSession(authRes: any)
@@ -90,6 +97,7 @@ export class AuthService {
     // localStorage.removeItem('expires_at');
     localStorage.clear();
     this.alert.info('You have been logged out successfully');
+    return this.http.get(env.backUrl + 'auth/track-logout');
   }
 
   getCountries()
