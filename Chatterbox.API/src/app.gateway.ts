@@ -23,6 +23,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     {
         //console.log(client);
         client.join(room);
+        this.logger.log(`Client joint to room ${room}`)
         this.server.emit('afterJoin', room);
     }
 

@@ -6,7 +6,7 @@
           You didnt pick a room
         </div>
         <div class="card-header" *ngIf="this.pickedRoom!._id.length !== 0">
-          Current room name is: {{this.pickedRoom}}
+          Current room name is: {{this.pickedRoom?.name}}
         </div>
         <div class="card-body">
           <h5 class="card-title"></h5>

@@ -67,6 +67,12 @@ export class AuthService {
     )
   }
 
+  checkNickname(nickname: string): Observable<boolean>
+  {
+
+    return this.http.get<boolean>(env.backUrl + 'auth/checkNickname');
+  }
+
   private setSession(authRes: any)
   {
     this.userStored = authRes.resp.user;

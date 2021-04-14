@@ -8,6 +8,7 @@ import { UserForLoginDto } from './dtos/userForLogin.dto';
 import { UserToReturnDto } from './dtos/userToReturn.dto';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstans } from './constans';
+import { Activity } from './entities/activity.entity';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,9 @@ export class AuthService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
-        private readonly jwtServ: JwtService
+        private readonly jwtServ: JwtService,
+        @InjectRepository(Activity)
+        private activeRepo: Repository<Activity>
     )
     {}
 
@@ -99,7 +102,7 @@ export class AuthService {
         } else throw new UnauthorizedException('User with that combination doesnt exist');
     }
 
-    async loginUser(userForLoginDto: UserForLoginDto)
+    async loginUser(userForLoginDto: UserForLoginDto, ip: string)
     {
         const user = await this.validateUser(userForLoginDto);
 
@@ -111,6 +114,33 @@ export class AuthService {
                 expiresIn: jwtConstans.expiresIn,
                 user
             };
+
+            const active = await this.activeRepo.findOne({loginOrNick: user.login});
+
+            if(active)
+            {
+                const {lastLogin, ip, ...rest} = active;
+
+                const toUpdate = Object.assign({},
+                    {
+                        ...rest,
+                        lastLogin: new Date(),
+                        ip
+                    })
+                await this.activeRepo.update(active._id, toUpdate)
+
+            }else
+            {
+                const toCreate = Object.assign({},
+                {
+                    loginOrNick: user.login,
+                    lastLogin: new Date(),
+                    ip
+                });
+
+                await this.activeRepo.save(toCreate);
+            }
+
             return details;
 
         }

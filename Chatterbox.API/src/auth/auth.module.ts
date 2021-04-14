@@ -8,10 +8,11 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import {jwtConstans} from './constans';
 import { JwtStrategy } from './jwt.strategy';
+import { Activity } from './entities/activity.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]), 
+    TypeOrmModule.forFeature([User, Activity]), 
     PassportModule,
     JwtModule.register({
       secret: jwtConstans.secret,

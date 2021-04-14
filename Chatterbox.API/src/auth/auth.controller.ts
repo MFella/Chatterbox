@@ -6,6 +6,7 @@ import { CheckLoginDto } from './dtos/checkLogin.dto';
 import { UserForLoginDto } from './dtos/userForLogin.dto';
 import { UserForRegisterDto } from './dtos/userForRegister.dto';
 import { UserToReturnDto } from './dtos/userToReturn.dto';
+import {RealIP} from 'nestjs-real-ip';
 
 @Controller('auth')
 export class AuthController {
@@ -46,9 +47,9 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() userForLoginDto: UserForLoginDto, @Res() res): Promise<void> 
+    async login(@Body() userForLoginDto: UserForLoginDto, @Res() res, @RealIP() ip: string): Promise<void> 
     {
-        const resp =  await this.authServ.loginUser(userForLoginDto);
+        const resp =  await this.authServ.loginUser(userForLoginDto, ip);
      
         if(res)
         {
