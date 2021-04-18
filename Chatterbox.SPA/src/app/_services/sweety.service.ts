@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import swal from 'sweetalert';
+import Swal, { SweetAlertResult } from 'sweetalert2';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -11,36 +11,23 @@ export class SweetyService {
 
   constructor(private authServ: AuthService) { }
 
-  async submitNickname(): Promise<boolean | void> 
+  async submitNickname(): Promise<string> 
   {
-    
-    swal("???", {
-      title: 'Who are you?',
-      text: "To be able to talk, you need to provide a unique nickname",
-      content: {
-        element: 'input'
-      }
-    } as any)
-    .then((value: string) =>
-    {
-      this.authServ.checkNickname(value)
-      .subscribe((res: any) =>
-      {
-        console.log(res);
 
-      }, (err: any) =>
-      {
-        return false;
-      })
-      //return res;
-    })
-    .catch((err: Error) =>
-    {
-      console.log(err);
-      return false;
-    })
+    const {value: nick} = await Swal.fire({
+      title: 'Type your nick instead, or try to login',
+      input: 'text',
+      inputLabel: 'Your volatile nickname',
+      inputPlaceholder: 'e.g. Brawler1523',
+      showCloseButton: true
+    });
 
-    //return false;
+    if(nick === undefined)
+    {
+      return '';
+    }
+
+    return nick;
   }
 
 

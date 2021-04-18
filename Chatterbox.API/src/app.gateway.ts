@@ -33,7 +33,15 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         client.leave(room);
         this.server.emit('afterLeft', room);
     }
-    
+
+    @SubscribeMessage("messageToRoom")
+    async messageToRoom(@ConnectedSocket() client: Socket, @MessageBody() msg: string): Promise<void>
+    {
+        console.log(client.rooms);
+        console.log(msg);
+
+    }
+
 
     afterInit(server: Server)
     {

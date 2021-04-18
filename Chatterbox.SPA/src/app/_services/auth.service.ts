@@ -75,7 +75,7 @@ export class AuthService {
       map((res: any) =>
       {
         console.log(`Res from checkNickname: ${res}`);
-        return res;
+        return res.res;
       })
     )
   }

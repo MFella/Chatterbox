@@ -36,6 +36,16 @@ export class ChatService{
     })
   }
 
+  public sendMessageToRoom(msg: string) 
+  {
+    // this.socket.on(roomId, (msg: string) =>
+    // {
+    //   this.socket.to(roomId).emit(roomId, msg);
+    // })
+    this.socket.emit("messageToRoom", msg);
+
+  }
+
   public joinRoom(room: string)
   {
     this.socket.emit('join', room);
@@ -44,6 +54,18 @@ export class ChatService{
   public leftRoom(room: string)
   {
     this.socket.emit('left', room);
+  }
+
+  public getMessageFromRoom(roomId: string) 
+  {
+    
+    return Observable.create((obs: any) =>
+    {
+      this.socket.on(roomId, (msg: string) =>
+      {
+        obs.next(msg);
+      })
+    })
   }
 
   public getConfirmationOfJoin = () =>
@@ -57,6 +79,17 @@ export class ChatService{
     })
   }
 
+  public getConfirmationOfLeft()
+  {
+    return Observable.create((obs: any) =>
+    {
+      this.socket.on('afterLeft', (msg: string) =>
+      {
+        obs.next(msg);
+      })
+    })
+  }
+
   public getRoomList(): Observable<RoomDto[]>
   {
     let headers = new HttpHeaders();
@@ -64,4 +97,5 @@ export class ChatService{
 
     return this.http.get<RoomDto[]>(environment.backUrl + 'channel/list', {headers});
   }
+
 }
