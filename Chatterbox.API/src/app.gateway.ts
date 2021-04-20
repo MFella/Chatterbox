@@ -1,12 +1,15 @@
 import { Logger } from "@nestjs/common";
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Socket, Server } from 'socket.io';
+import { MessageToRoomDto } from "./channel/dto/messageToRoom.dto";
 
 @WebSocketGateway(3101)
 export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
 
     @WebSocketServer() server: Server;
     
+    // connectedClients: Socket[] = [];
+
     private logger: Logger = new Logger('AppGateway');
 
     @SubscribeMessage('msgToServer')
@@ -35,10 +38,15 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     }
 
     @SubscribeMessage("messageToRoom")
-    async messageToRoom(@ConnectedSocket() client: Socket, @MessageBody() msg: string): Promise<void>
+    async messageToRoom(@ConnectedSocket() client: Socket, @MessageBody() messageToRoomDto: MessageToRoomDto): Promise<void>
     {
-        console.log(client.rooms);
-        console.log(msg);
+
+        if(Object.values(client.rooms).includes(messageToRoomDto.roomId))
+        {
+            //console.log(`Try to emit: ${messageToRoomDto.message}`);
+            //let {roomId, ...rest} = messageToRoomDto;
+            this.server.to(messageToRoomDto.roomId).emit('getMessage', messageToRoomDto);
+        }
 
     }
 
@@ -58,22 +66,25 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     {
         this.logger.log(`Client connected: ${client.id}`);
         this.server.emit('afterConnection', 'Something after handle connection');
-        console.log('Message should be sent');
     }
 
     @SubscribeMessage('joinRoom')
-    handleJoinRoom(client: Socket, room: string)
+    handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() messageToRoomDto: MessageToRoomDto)
     {
-        client.join(room);
+        console.log()
+        console.log(messageToRoomDto);
+        client.join(messageToRoomDto.roomId);
+        this.server.to(messageToRoomDto.roomId).emit('jointRoom', messageToRoomDto);
         this.logger.log("NICE");
-        client.emit('joinedRoom', room);
+        //client.emit('joinedRoom', room);
     }
 
     @SubscribeMessage('leaveRoom')
-    handleLeaveRoom(client: Socket, room: string)
+    handleLeaveRoom(@ConnectedSocket() client: Socket, @MessageBody() messageToRoomDto: MessageToRoomDto)
     {
-        client.leave(room);
-        client.emit('leftRoom', room);
+        this.server.to(messageToRoomDto.roomId).emit('leftRoom', messageToRoomDto);
+        //client.emit('leftRoom', messageToRoomDto.roomId);
+        client.leave(messageToRoomDto.roomId);
     }
 
 }

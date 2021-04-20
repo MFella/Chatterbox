@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faEnvelope, faHandshake, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { Observable } from 'rxjs';
+import { MessageToRoomDto, TYPE_OF_ACTION } from '../dtos/messageToRoom.dto';
 import { RoomDto } from '../dtos/room.dto';
 import { AlertService } from '../_services/alert.service';
 import { AuthService } from '../_services/auth.service';
@@ -17,6 +19,7 @@ export class ChatRoomComponent implements OnInit {
   public currentRoom!: string | null;
   public pickedRoom!: RoomDto | null;
   public messageInput!: string | undefined;
+  public messages: MessageToRoomDto[] = [];
 
   public icons: Array<IconDefinition> = [faEnvelope, faSignOutAlt, faHandshake];
 
@@ -35,19 +38,47 @@ export class ChatRoomComponent implements OnInit {
       }
       //this.currentRoom = null;
       this.chatServ.sendMessage("Are you serious?");
-      this.chatServ.getMessages()
-      .subscribe((message: string) =>
-      {
-        console.log(message);
-      })
-
+      // this.chatServ.getMessages()
+      // .subscribe((message: MessageToRoomDto) =>
+      // {
+      //   console.log(message); 
+      // })
     });
+
+    this.chatServ.getMessageFromRoom(this.currentRoom ?? '')
+    .subscribe((res: MessageToRoomDto) =>
+    {
+      console.log(res);
+      this.messages.push(res);
+    });
+    this.chatServ.getConfirmationOfLeft()
+    .subscribe((res: MessageToRoomDto) =>
+    {
+      this.messages.push(res);
+      this.currentRoom = null;
+    });
+
+    this.chatServ.getConfirmationOfJoin()
+    .subscribe((res: MessageToRoomDto) =>
+    {
+      this.messages.push(res);
+      this.currentRoom = res.roomId;
+    })
   }
 
   public sendMessageToRoom(msg: string | undefined)
   {
-    this.chatServ.sendMessageToRoom(msg ?? '');
+    let toSend: MessageToRoomDto = Object.assign({}, {
+      roomId: this.currentRoom ?? '',
+      message: msg ?? '',
+      nickname: this.authServ.userStored?.login ?? localStorage.getItem('volatileNick') ?? '',
+      action: TYPE_OF_ACTION.MESSAGE
+    });
+    
+    this.chatServ.sendMessageToRoom(toSend);
+    this.messageInput = '';
   }
+
 
   public async joinRoom()
   {
@@ -71,13 +102,20 @@ export class ChatRoomComponent implements OnInit {
               this.alert.success(`You has been logged in`);
               localStorage.setItem('volatileNick', result);
 
-              this.chatServ.joinRoom(this.pickedRoom!._id);
-              this.chatServ.getConfirmationOfJoin()
-              .subscribe((room: string) =>
-              {
-                console.log(`Connected to room: ${room}`);
-                this.currentRoom = room;
+              let toSend: MessageToRoomDto = Object.assign({}, {
+                roomId: this.pickedRoom!._id,
+                nickname: result,
+                message: '',
+                action: TYPE_OF_ACTION.ACTIVITY
               })
+
+              this.chatServ.joinRoom(toSend);
+              // this.chatServ.getConfirmationOfJoin()
+              // .subscribe((room: string) =>
+              // {
+              //   console.log(`Connected to room: ${room}`);
+              //   this.currentRoom = room;
+              // });
   
             }else
             {
@@ -93,13 +131,45 @@ export class ChatRoomComponent implements OnInit {
 
     }else{
 
-      this.chatServ.joinRoom(this.pickedRoom!._id);
-      this.chatServ.getConfirmationOfJoin()
-      .subscribe((room: string) =>
+
+      if(this.authServ.userStored !== null)
       {
-        console.log(`Connected to room: ${room}`);
-        this.currentRoom = room;
-      })
+        let toSend: MessageToRoomDto = Object.assign({}, {
+          roomId: this.pickedRoom?._id ?? '',
+          nickname: this.authServ.userStored?.login ?? '',
+          message: '',
+          action: TYPE_OF_ACTION.ACTIVITY
+        })
+        this.chatServ.joinRoom(toSend);
+      }
+      else
+      {
+        let toSend: MessageToRoomDto = Object.assign({}, {
+          roomId: this.pickedRoom?._id ?? '',
+          nickname: localStorage.getItem('volatileNick') ?? '',
+          message: '',
+          action: TYPE_OF_ACTION.ACTIVITY
+        })
+        this.chatServ.joinRoom(toSend);
+      }
+
+      // this.chatServ.getConfirmationOfJoin()
+      // .subscribe((room: string) =>
+      // {
+      //   console.log(`Connected to room: ${room}`);
+      //   this.currentRoom = room;
+      // });
+
+      // this.chatServ.getMessageFromRoom(this.currentRoom ?? '')
+      // .subscribe((msg: any) =>
+      // {
+      //   console.log(msg);
+
+      // }, (err: any) =>
+      // {
+      //   console.log(err);
+      // });
+
     }
   }
 
@@ -111,14 +181,40 @@ export class ChatRoomComponent implements OnInit {
       return;
     }else
     {
-      this.chatServ.leftRoom(this.pickedRoom!._id);
-      this.chatServ.getConfirmationOfLeft()
-      .subscribe((room: string) =>
-      {
-        console.log(`Left room: ${room}`);
-        this.currentRoom = '';
 
-      })
+      if(this.authServ.userStored !== null)
+      {
+        let toSend: MessageToRoomDto = Object.assign({}, {
+          roomId: this.currentRoom ?? '',
+          nickname: this.authServ.userStored.login,
+          message: '',
+          action: TYPE_OF_ACTION.ACTIVITY
+        })
+
+        this.chatServ.leftRoom(toSend);
+
+      } else
+      {
+
+        let toSend: MessageToRoomDto = Object.assign({}, {
+          roomId: this.currentRoom ?? '',
+          nickname: localStorage.getItem('volatileNick') ?? '',
+          message: '',
+          action: TYPE_OF_ACTION.ACTIVITY
+        })
+
+        this.chatServ.leftRoom(toSend);
+
+      }
+
+      
+
+      // this.chatServ.getConfirmationOfLeft()
+      // .subscribe((room: string) =>
+      // {
+      //   console.log(`Left room: ${room}`);
+      //   this.currentRoom = '';
+      // })
     }
   }
 

@@ -12,11 +12,16 @@
           <h5 class="card-title"></h5>
           <h5 class="card-title"></h5>
           <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <p class="card-text d-flex justify-content-between" *ngFor="let message of messages">
+            <strong *ngIf="message.action === 'MESSAGE'">{{message.nickname}}:</strong>
+            <strong *ngIf="message.action === 'MESSAGE'" class="pl-2">{{message.message}}</strong>
+            <strong *ngIf="message.action === 'ACTIVITY'">User {{message.nickname}} has joined the chat!</strong>
+          </p>
           <a href="#" class="btn btn-primary">Go somewhere</a>
         </div>
         <div class="card-footer d-flex justify-content-between align-items-center">
           <button class="btn btn-primary"
-          
+          [disabled]="!this.currentRoom"
           (click)="this.sendMessageToRoom(this.messageInput)"
           >Send <fa-icon [icon]="icons[0]"></fa-icon></button>
           <button class="btn btn-outline-info"
@@ -26,7 +31,7 @@
           >Join <fa-icon [icon]="icons[2]"></fa-icon></button>
           <input type="text" class="form-control mx-2 message_input" id="message_input" placeholder="Type something ..."
           [(ngModel)]="this.messageInput"
-          
+          *ngIf="this.currentRoom"
           [(ngModel)]="this.messageInput"
           >
           <button class="btn btn-warning" [disabled]="!this.currentRoom" (click)="leftRoom()">

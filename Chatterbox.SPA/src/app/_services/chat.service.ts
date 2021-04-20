@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import {environment} from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RoomDto } from '../dtos/room.dto';
+import { MessageToRoomDto } from '../dtos/messageToRoom.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,7 @@ export class ChatService{
     })
   }
 
-  public sendMessageToRoom(msg: string) 
+  public sendMessageToRoom(msg: MessageToRoomDto) 
   {
     // this.socket.on(roomId, (msg: string) =>
     // {
@@ -46,14 +47,14 @@ export class ChatService{
 
   }
 
-  public joinRoom(room: string)
+  public joinRoom(messageToRoomDto: MessageToRoomDto)
   {
-    this.socket.emit('join', room);
+    this.socket.emit('joinRoom', messageToRoomDto);
   }
 
-  public leftRoom(room: string)
+  public leftRoom(messageToRoomDto: MessageToRoomDto)
   {
-    this.socket.emit('left', room);
+    this.socket.emit('leaveRoom', messageToRoomDto);
   }
 
   public getMessageFromRoom(roomId: string) 
@@ -61,7 +62,7 @@ export class ChatService{
     
     return Observable.create((obs: any) =>
     {
-      this.socket.on(roomId, (msg: string) =>
+      this.socket.on("getMessage", (msg: MessageToRoomDto) =>
       {
         obs.next(msg);
       })
@@ -72,7 +73,7 @@ export class ChatService{
   {
     return Observable.create((obs: any) =>
     {
-      this.socket.on('afterJoin', (msg: string) =>
+      this.socket.on('jointRoom', (msg: MessageToRoomDto) =>
       {
         obs.next(msg);
       })
@@ -83,7 +84,7 @@ export class ChatService{
   {
     return Observable.create((obs: any) =>
     {
-      this.socket.on('afterLeft', (msg: string) =>
+      this.socket.on('leftRoom', (msg: MessageToRoomDto) =>
       {
         obs.next(msg);
       })
