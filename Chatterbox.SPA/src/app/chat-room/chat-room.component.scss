@@ -1,7 +1,17 @@
+$spaceForDash: 3rem;
+
 @mixin round_border_card
 {
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
+}
+
+@mixin dash_attr
+{
+    width: 4rem !important;
+    content:'' !important;
+    border-top: .1rem solid rgba(0,0,0,.2);
+    transform: translateY(.7rem);
 }
 
 .card
@@ -28,5 +38,67 @@
     {
         display: inline-block;
         width: 50% !important;
+    }
+}
+
+.card-body
+{
+    .card-text.perform_content
+    {
+        padding: .75rem;
+        background-color: rgba(101, 153, 201,.4);
+        border-radius: 1rem;
+
+        span.badge
+        {
+            width: 10%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(-1.2rem);
+            max-height: 1.3rem;
+        }
+
+
+        strong.message_content
+        {
+            display: inline-block;
+            transform: translateY(-.9rem) !important;
+        }
+    }
+
+    .card-text.invitation_text
+    {
+        display: flex; 
+        justify-content: center;
+    }
+    .card-text
+    {
+        strong.action_join, strong.action_leave
+        {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            overflow: hidden !important;
+            span{
+                text-decoration: underline;
+                padding-left: .3rem;
+                padding-right: .3rem;
+            }
+
+            &::before
+            {
+                @include dash_attr;
+                margin-right: $spaceForDash;
+            }
+
+            &::after
+            {
+                @include dash_attr;
+                margin-left: $spaceForDash;
+
+            }
+
+        }
     }
 }

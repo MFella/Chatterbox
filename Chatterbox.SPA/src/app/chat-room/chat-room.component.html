@@ -11,13 +11,16 @@
         <div class="card-body">
           <h5 class="card-title"></h5>
           <h5 class="card-title"></h5>
-          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-          <p class="card-text d-flex justify-content-between" *ngFor="let message of messages">
-            <strong *ngIf="message.action === 'MESSAGE'">{{message.nickname}}:</strong>
-            <strong *ngIf="message.action === 'MESSAGE'" class="pl-2">{{message.message}}</strong>
-            <strong *ngIf="message.action === 'ACTIVITY'">User {{message.nickname}} has joined the chat!</strong>
+          <p class="card-text invitation_text font-italic">Just try to be polite ;)</p>
+          <p class="card-text perform_content" *ngFor="let message of messages" popover="{{message.performAt | toAgoTime}}"
+          triggers="mouseenter:mouseleave">
+            <span *ngIf="message.action === 'MESSAGE'" class="badge badge-pill badge-info">{{message.nickname}}</span>
+            <!-- <strong *ngIf="message.action === 'MESSAGE'" class="message_nick">{{message.nickname}}:</strong> -->
+            <strong *ngIf="message.action === 'MESSAGE'" class="message_content">{{message.message}}</strong>
+            <strong *ngIf="message.action === 'JOIN'" class="action_join"> User <span>{{message.nickname}}</span> has joined the chat!</strong>
+            <strong *ngIf="message.action === 'LEAVE'" class="action_leave">User <span>{{message.nickname}}</span>  has left the chat!</strong>
+            <!-- <strong class="perfomed_time">{{message.performAt}}</strong> -->
           </p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
         </div>
         <div class="card-footer d-flex justify-content-between align-items-center">
           <button class="btn btn-primary"
@@ -33,6 +36,7 @@
           [(ngModel)]="this.messageInput"
           *ngIf="this.currentRoom"
           [(ngModel)]="this.messageInput"
+          (keydown.enter)="sendMessageToRoom(this.messageInput)"
           >
           <button class="btn btn-warning" [disabled]="!this.currentRoom" (click)="leftRoom()">
             Leave <fa-icon [icon]="icons[1]"></fa-icon></button>

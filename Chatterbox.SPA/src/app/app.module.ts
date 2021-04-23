@@ -23,6 +23,8 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import {environment} from '../environments/environment'
 import { ChatService } from './_services/chat.service';
 import { ChannelListResolver } from './_resolvers/channel-list.resolver';
+import {PopoverModule} from 'ngx-bootstrap/popover';
+import { ToAgoTimePipe } from './_pipes/toAgoTime.pipe';
 
 const config: SocketIoConfig = {url: `${environment.socketBackUrl}/chat`, options: {transports: ['websocket'], allowUpgrades: true}};
 
@@ -35,7 +37,8 @@ const config: SocketIoConfig = {url: `${environment.socketBackUrl}/chat`, option
       RegisterComponent,
       MyProfileComponent,
       RoomListComponent,
-      ChatRoomComponent
+      ChatRoomComponent,
+      ToAgoTimePipe
    ],
   imports: [
     BrowserModule,
@@ -49,7 +52,8 @@ const config: SocketIoConfig = {url: `${environment.socketBackUrl}/chat`, option
     FontAwesomeModule,
     ToastrModule.forRoot(),
     NgbModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    PopoverModule.forRoot()
   ],
   providers: [
     ChannelListResolver,

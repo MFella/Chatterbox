@@ -72,7 +72,8 @@ export class ChatRoomComponent implements OnInit {
       roomId: this.currentRoom ?? '',
       message: msg ?? '',
       nickname: this.authServ.userStored?.login ?? localStorage.getItem('volatileNick') ?? '',
-      action: TYPE_OF_ACTION.MESSAGE
+      action: TYPE_OF_ACTION.MESSAGE,
+      performAt: new Date()
     });
     
     this.chatServ.sendMessageToRoom(toSend);
@@ -106,7 +107,8 @@ export class ChatRoomComponent implements OnInit {
                 roomId: this.pickedRoom!._id,
                 nickname: result,
                 message: '',
-                action: TYPE_OF_ACTION.ACTIVITY
+                action: TYPE_OF_ACTION.JOIN,
+                performAt: new Date()
               })
 
               this.chatServ.joinRoom(toSend);
@@ -138,7 +140,8 @@ export class ChatRoomComponent implements OnInit {
           roomId: this.pickedRoom?._id ?? '',
           nickname: this.authServ.userStored?.login ?? '',
           message: '',
-          action: TYPE_OF_ACTION.ACTIVITY
+          action: TYPE_OF_ACTION.JOIN,
+          performAt: new Date()
         })
         this.chatServ.joinRoom(toSend);
       }
@@ -148,7 +151,8 @@ export class ChatRoomComponent implements OnInit {
           roomId: this.pickedRoom?._id ?? '',
           nickname: localStorage.getItem('volatileNick') ?? '',
           message: '',
-          action: TYPE_OF_ACTION.ACTIVITY
+          action: TYPE_OF_ACTION.JOIN,
+          performAt: new Date()
         })
         this.chatServ.joinRoom(toSend);
       }
@@ -188,7 +192,8 @@ export class ChatRoomComponent implements OnInit {
           roomId: this.currentRoom ?? '',
           nickname: this.authServ.userStored.login,
           message: '',
-          action: TYPE_OF_ACTION.ACTIVITY
+          action: TYPE_OF_ACTION.LEAVE,
+          performAt: new Date()
         })
 
         this.chatServ.leftRoom(toSend);
@@ -200,7 +205,8 @@ export class ChatRoomComponent implements OnInit {
           roomId: this.currentRoom ?? '',
           nickname: localStorage.getItem('volatileNick') ?? '',
           message: '',
-          action: TYPE_OF_ACTION.ACTIVITY
+          action: TYPE_OF_ACTION.LEAVE,
+          performAt: new Date()
         })
 
         this.chatServ.leftRoom(toSend);
