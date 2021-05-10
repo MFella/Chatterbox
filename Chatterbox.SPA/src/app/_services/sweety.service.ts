@@ -30,5 +30,23 @@ export class SweetyService {
     return nick;
   }
 
+  async changeVolatileNickname(currNickname: string): Promise<string>
+  {
 
+    const {value: nick} = await Swal.fire({
+      title: 'Change your volatile nickname',
+      input: 'text',
+      inputValue: currNickname,
+      inputLabel: 'Remember about appropriate pattern',
+      //inputPlaceholder: 'e.g. Brawler1523',
+      showCloseButton: true
+    });
+
+    if(nick === undefined)
+    {
+      return '';
+    }
+    return nick;
+    
+  }
 }

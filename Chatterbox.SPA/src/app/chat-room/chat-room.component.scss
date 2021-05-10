@@ -19,6 +19,18 @@ $spaceForDash: 3rem;
     padding: 0!important;
     @include round_border_card;
     min-height: 80vh;
+    max-height: 82vh;
+
+    .card-header
+    {
+        min-height: 4rem;
+
+        .logged_as
+        {
+            display: inline-block;
+            transform: translateY(.1rem) !important;
+        }
+    }
 
     .card-footer{
 
@@ -39,31 +51,75 @@ $spaceForDash: 3rem;
         display: inline-block;
         width: 50% !important;
     }
+
 }
+
+// popover ...
+// ::ng-deep popover-container {
+//     max-width: 100% !important;
+//     background-color: black !important;
+//     color: white !important;
+//     position: absolute !important;
+// }
+
+// ::ng-deep .bs-popover-bottom>.arrow::after {
+//     border-bottom-color: black !important;
+//     display: none !important;
+// }
 
 .card-body
 {
+    overflow-y: scroll;
+    padding-bottom: 1.5rem;
+
+    &::-webkit-scrollbar
+    {
+        display: none;
+    }
+
     .card-text.perform_content
     {
         padding: .75rem;
         background-color: rgba(101, 153, 201,.4);
         border-radius: 1rem;
+        margin-top: 1rem;
 
-        span.badge
+        .perform_content_header
+        {
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+            transform: translateY(-1.2rem);
+        }
+
+
+        span.badge-info
+        {
+            width: 20%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-height: 1.3rem;
+        }
+
+        span.badge-warning
         {
             width: 10%;
             display: flex;
             justify-content: center;
             align-items: center;
-            transform: translateY(-1.2rem);
             max-height: 1.3rem;
         }
 
-
         strong.message_content
         {
-            display: inline-block;
-            transform: translateY(-.9rem) !important;
+            //margin: 4rem;
+            display: block;
+            transform: translateY(-.5rem) !important;
+        }
+        .action_leave, .action_join
+        {
+           transform: translateY(-.5rem);
         }
     }
 
@@ -81,7 +137,8 @@ $spaceForDash: 3rem;
             width: 100%;
             overflow: hidden !important;
             span{
-                text-decoration: underline;
+                //text-decoration: underline;
+                font-style: italic;
                 padding-left: .3rem;
                 padding-right: .3rem;
             }

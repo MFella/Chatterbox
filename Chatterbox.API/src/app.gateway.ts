@@ -74,6 +74,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         console.log()
         console.log(messageToRoomDto);
         client.join(messageToRoomDto.roomId);
+        console.log(this.server)
         this.server.to(messageToRoomDto.roomId).emit('jointRoom', messageToRoomDto);
         this.logger.log("NICE");
         //client.emit('joinedRoom', room);

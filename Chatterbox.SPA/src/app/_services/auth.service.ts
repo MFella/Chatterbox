@@ -16,9 +16,30 @@ export class AuthService {
 
   constructor(private http: HttpClient, private alert: AlertService) { 
     this.userStored = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '{}'): null;
+    const volatileNick = localStorage.getItem('volatileNick');
+    this.currNickname = this.userStored !== null ? this.userStored.login : this.generateNick(volatileNick) ;
+    console.log(this.currNickname)
   }
 
   userStored!: UserStored | null;
+  currNickname!: string | null;
+
+  private generateNick(volatileNick: string | null): string
+  {
+
+    const fromStorage: string | null = localStorage.getItem('volatileNick') ;
+
+    if(fromStorage !== null)
+    {
+      return fromStorage;
+    }
+
+    const random_suf: string = Math.random().toString(36).substring(5);
+    const fullNick: string = "Guest_" + random_suf;
+    localStorage.setItem('volatileNick', fullNick);
+
+    return volatileNick !== null ? volatileNick : fullNick;
+  }
 
   checkAvailabilityOfLogin(login: string): Observable<boolean>
   {

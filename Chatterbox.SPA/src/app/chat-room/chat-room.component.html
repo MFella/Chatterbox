@@ -2,29 +2,35 @@
   <div class="row">
     <div class="col-md-12">
       <div class="card">
-        <div class="card-header" *ngIf="this.pickedRoom!._id.length === 0">
-          You didnt pick a room
+        <div class="card-header d-flex align-items-center" *ngIf="this.pickedRoom!._id.length === 0">
+          <span>You didnt pick a room</span>
         </div>
-        <div class="card-header" *ngIf="this.pickedRoom!._id.length !== 0">
-          Current room name is: {{this.pickedRoom?.name}}
+        <div class="card-header d-flex align-items-center justify-content-between" *ngIf="this.pickedRoom!._id.length !== 0">
+          <span>Current room name is: {{this.pickedRoom?.name}}</span>
+          <span> <div class="logged_as">Logged as</div>
+            <button class="btn btn-sm btn-outline-primary ml-2" (click)="changeNickname()"> {{this.authServ.currNickname}} <fa-icon [icon]="icons[3]"></fa-icon></button></span>
         </div>
-        <div class="card-body">
-          <h5 class="card-title"></h5>
-          <h5 class="card-title"></h5>
+        <div class="card-body" #msgContainer>
+          <!-- <h5 class="card-title"></h5>
+          <h5 class="card-title"></h5> -->
           <p class="card-text invitation_text font-italic">Just try to be polite ;)</p>
-          <p class="card-text perform_content" *ngFor="let message of messages" popover="{{message.performAt | toAgoTime}}"
-          triggers="mouseenter:mouseleave">
-            <span *ngIf="message.action === 'MESSAGE'" class="badge badge-pill badge-info">{{message.nickname}}</span>
+          <div class="card-text perform_content" *ngFor="let message of messages" popover="{{message.performAt | toAgoTime}}"
+          triggers="mouseenter:mouseleave" placement="top">
+            
+            <div class="perform_content_header">
+              <span *ngIf="message.action === 'MESSAGE'" class="badge badge-pill badge-info">{{message.nickname}}</span>
+              <span class="badge badge-pill badge-warning">{{message.performAt | toAgoTime}}</span>
+            </div>
             <!-- <strong *ngIf="message.action === 'MESSAGE'" class="message_nick">{{message.nickname}}:</strong> -->
             <strong *ngIf="message.action === 'MESSAGE'" class="message_content">{{message.message}}</strong>
             <strong *ngIf="message.action === 'JOIN'" class="action_join"> User <span>{{message.nickname}}</span> has joined the chat!</strong>
             <strong *ngIf="message.action === 'LEAVE'" class="action_leave">User <span>{{message.nickname}}</span>  has left the chat!</strong>
-            <!-- <strong class="perfomed_time">{{message.performAt}}</strong> -->
-          </p>
+            
+          </div>
         </div>
         <div class="card-footer d-flex justify-content-between align-items-center">
           <button class="btn btn-primary"
-          [disabled]="!this.currentRoom"
+          [disabled]="!this.currentRoom || this.messageInput?.length === 0 || this.messageInput === undefined"
           (click)="this.sendMessageToRoom(this.messageInput)"
           >Send <fa-icon [icon]="icons[0]"></fa-icon></button>
           <button class="btn btn-outline-info"

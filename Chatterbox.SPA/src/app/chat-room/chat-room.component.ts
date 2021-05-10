@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { faEnvelope, faHandshake, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faHandshake, faSignOutAlt, faCogs } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
 import { MessageToRoomDto, TYPE_OF_ACTION } from '../dtos/messageToRoom.dto';
 import { RoomDto } from '../dtos/room.dto';
@@ -16,17 +16,21 @@ import { SweetyService } from '../_services/sweety.service';
 })
 export class ChatRoomComponent implements OnInit {
 
+  @ViewChild('msgContainer') private msgContainer!: ElementRef;
+
   public currentRoom!: string | null;
   public pickedRoom!: RoomDto | null;
   public messageInput!: string | undefined;
   public messages: MessageToRoomDto[] = [];
 
-  public icons: Array<IconDefinition> = [faEnvelope, faSignOutAlt, faHandshake];
+  public icons: Array<IconDefinition> = [faEnvelope, faSignOutAlt, faHandshake, faCogs];
 
-  constructor(public chatServ: ChatService, private authServ: AuthService,
+  constructor(public chatServ: ChatService, public authServ: AuthService,
     private sweety: SweetyService, private alert: AlertService) { }
 
   ngOnInit() {
+
+    console.log(this.authServ.userStored);
 
     this.chatServ.selectedRoom.subscribe((res: RoomDto) =>
     {
@@ -34,6 +38,7 @@ export class ChatRoomComponent implements OnInit {
       // leave the current room!
       if(this.currentRoom)
       {
+        //this.messages = [];
         this.leftRoom();
       }
       //this.currentRoom = null;
@@ -49,12 +54,15 @@ export class ChatRoomComponent implements OnInit {
     .subscribe((res: MessageToRoomDto) =>
     {
       console.log(res);
+      this.scrollToBottom();
       this.messages.push(res);
     });
     this.chatServ.getConfirmationOfLeft()
     .subscribe((res: MessageToRoomDto) =>
     {
+      this.messages = [];
       this.messages.push(res);
+      this.scrollToBottom();
       this.currentRoom = null;
     });
 
@@ -177,6 +185,9 @@ export class ChatRoomComponent implements OnInit {
     }
   }
 
+
+
+
   leftRoom()
   {
     if(localStorage.getItem('volatileNick') === null && this.authServ.userStored === null)
@@ -221,6 +232,54 @@ export class ChatRoomComponent implements OnInit {
       //   console.log(`Left room: ${room}`);
       //   this.currentRoom = '';
       // })
+    }
+  }
+
+  scrollToBottom(): void
+  {
+    try{
+      const listOfMsgs = document.querySelectorAll('.perform_content');
+
+      this.msgContainer.nativeElement.scrollTop = this.msgContainer.nativeElement.scrollHeight + listOfMsgs[listOfMsgs.length-1].scrollHeight;
+    }catch(err: unknown)
+    {
+      console.log(err);
+    }
+  }
+
+  public async changeNickname(): Promise<void>
+  {
+    const result = await this.sweety.changeVolatileNickname(this.authServ.currNickname ?? '');
+    console.log(result);
+
+    if(!/^[a-zA-Z0-9_.-]*$/.test(result))
+    {
+      this.alert.error('Nickname has inappropriate pattern');
+    }else{
+
+      this.authServ.checkAvailabilityOfLogin(result)
+      .subscribe((res: boolean) => 
+      {
+        if(res)
+        {
+          localStorage.clear();
+          localStorage.setItem('volatileNick', result);
+          this.authServ.currNickname = result;
+          this.alert.success('Nickname has been changed!');
+        }
+
+        console.log('available');
+        console.log(res);
+        if(!res)
+        {
+          this.alert.error('This nick is already taken. Try another one.');
+        }
+      }, (err: any) =>
+      {
+        console.log(err);
+        this.alert.error('Nickname is not appropriate')
+      });
+
     }
   }
 
