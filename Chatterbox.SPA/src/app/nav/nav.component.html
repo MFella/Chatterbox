@@ -38,7 +38,7 @@
               <button ngbDropdownItem class="d-flex flex-row justify-content-between" [routerLink]="['my-profile']">My profile <fa-icon [icon]="icons[7]"></fa-icon></button>
               <button ngbDropdownItem class="d-flex flex-row justify-content-between">Latest chat <fa-icon [icon]="icons[8]"></fa-icon></button>
               <hr class="my-1">
-              <button ngbDropdownItem class="d-flex flex-row justify-content-between" (click)="this.authServ.logout()">Logout <fa-icon [icon]="icons[6]"></fa-icon></button>
+              <button ngbDropdownItem class="d-flex flex-row justify-content-between" (click)="logout()">Logout <fa-icon [icon]="icons[6]"></fa-icon></button>
             </div>
           </div>     
         </li>

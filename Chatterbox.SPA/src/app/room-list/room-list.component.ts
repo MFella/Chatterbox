@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Data } from '@angular/router';
 import { PartialObserver } from 'rxjs';
 import { RoomDto } from '../dtos/room.dto';
+import { RoleTypes } from '../_models/userStored.interface';
+import { AuthService } from '../_services/auth.service';
 import { ChatService } from '../_services/chat.service';
 
 @Component({
@@ -14,7 +16,8 @@ export class RoomListComponent implements OnInit {
   //roomNames: Array<string> = ["CH1", "CH2", "CH3", "CH4", "CH5"];
   rooms!: RoomDto[];
 
-  constructor(public chatServ: ChatService, private route: ActivatedRoute) { }
+  constructor(public chatServ: ChatService, private route: ActivatedRoute,
+    public authServ: AuthService) { }
 
   ngOnInit() {
     this.route.data.subscribe((res: Data) =>
@@ -26,6 +29,22 @@ export class RoomListComponent implements OnInit {
   selectRoom(chatRoom: RoomDto)
   {
     this.chatServ.selectedRoom.next(chatRoom);
+    this.trackActivity();
+  }
+
+  private trackActivity()
+  {
+    const nickToTrack = this.authServ.userStored ? this.authServ.userStored.login: localStorage.getItem('volatileNick');
+    const roleToTrack = this.authServ.userStored ? RoleTypes.REGISTERED_USER : RoleTypes.GUEST_USER;
+    this.authServ.trackActivity(nickToTrack, roleToTrack)
+      .subscribe((res: any) =>
+      {
+        console.log(res);
+
+      }, (err: any) =>
+      {
+        console.log(err);
+      })
   }
 
 }

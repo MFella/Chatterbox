@@ -8,7 +8,8 @@ import { UserForLoginDto } from './dtos/userForLogin.dto';
 import { UserToReturnDto } from './dtos/userToReturn.dto';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstans } from './constans';
-import { Activity } from './entities/activity.entity';
+import { Activity, RoleTypes } from './entities/activity.entity';
+import { TrackActivityDto } from './dtos/trackActivity.dto';
 
 @Injectable()
 export class AuthService {
@@ -178,7 +179,7 @@ export class AuthService {
     async trackLogout(login: string): Promise<boolean>
     {
         // maybe blacklist token? ... 
-
+        console.log('jestem');
         try{
             const actUserFromRepo = await this.activeRepo.findOne({loginOrNick: login});
 
@@ -187,10 +188,10 @@ export class AuthService {
                 const{isLoggedIn, ...rest} = actUserFromRepo;  
                 const toUpdate = Object.assign({}, {
                     ...rest,
-                    isLoggedIn: false
+                    isLoggedIn: false,
+                    timeOfLogout: new Date()
                 })
-                await this.activeRepo.update(login, toUpdate);
-
+                await this.activeRepo.update({loginOrNick: login}, toUpdate);
                 return true;
             }else
             {
@@ -200,6 +201,47 @@ export class AuthService {
         {
             return false;
         }
+    }
+
+    async trackActivity(trackActivityDto: TrackActivityDto, ip: any): Promise<boolean>
+    {
+        try{
+            const actUserFromRepo = await this.activeRepo.findOne({loginOrNick: trackActivityDto.login});
+            const userFromRepo = await this.userRepository.findOne({login: trackActivityDto.login});
+            
+            if(actUserFromRepo){
+                const{isLoggedIn, ...rest} = actUserFromRepo;  
+                const toUpdate = Object.assign({}, {
+                    ...rest,
+                    isLoggedIn: true,
+                    lastLogin: new Date(),
+                    loginOrNick: trackActivityDto.newLogin !== 'undefined'? trackActivityDto.newLogin: rest.loginOrNick
+                });
+                await this.activeRepo.update({ loginOrNick: trackActivityDto.login}, toUpdate);
+
+                return true;
+            }else{
+                // create record of activity
+
+                const toUpdate = Object.assign({}, {
+                    isLoggedIn: true,
+                    loginOrNick: trackActivityDto.newLogin !== 'undefined' ? trackActivityDto.newLogin : trackActivityDto.login,
+                    lastLogin: new Date(),
+                    roleType: trackActivityDto.roleType, //userFromRepo ? RoleTypes.REGISTERED_USER : RoleTypes.GUEST_USER,
+                    ip
+                })
+                await this.activeRepo.save(toUpdate);
+
+                return true;
+
+            }
+
+        }catch(e)
+        {
+            console.log(e);
+            return false;
+        }
+
 
     }
 

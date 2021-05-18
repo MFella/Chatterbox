@@ -5,7 +5,7 @@ import {environment as env} from '../../environments/environment';
 import {map, shareReplay, tap} from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { UserForLoginDto } from '../dtos/userForLogin.dto';
-import { UserStored } from '../_models/userStored.interface';
+import { RoleTypes, UserStored } from '../_models/userStored.interface';
 import * as moment from 'moment';
 import { AlertService } from './alert.service';
 
@@ -17,12 +17,12 @@ export class AuthService {
   constructor(private http: HttpClient, private alert: AlertService) { 
     this.userStored = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '{}'): null;
     const volatileNick = localStorage.getItem('volatileNick');
-    this.currNickname = this.userStored !== null ? this.userStored.login : this.generateNick(volatileNick) ;
+    this.currNickname = this.userStored !== null ? this.userStored.login : this.generateNick(volatileNick);
     console.log(this.currNickname)
   }
 
   userStored!: UserStored | null;
-  currNickname!: string | null;
+  currNickname!: string | null | undefined;
 
   private generateNick(volatileNick: string | null): string
   {
@@ -39,6 +39,14 @@ export class AuthService {
     localStorage.setItem('volatileNick', fullNick);
 
     return volatileNick !== null ? volatileNick : fullNick;
+  }
+
+  trackActivity(nickOrLogin: string | null, roleType: RoleTypes, newLogin?: string): Observable<boolean>
+  {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
+
+    return this.http.get<boolean>(env.backUrl + `auth/track-activity?login=${nickOrLogin}&roleType=${roleType}&newLogin=${newLogin}`, {headers});
   }
 
   checkAvailabilityOfLogin(login: string): Observable<boolean>
@@ -78,8 +86,8 @@ export class AuthService {
       {
         if(res.resp.user)
         {
-
           this.userStored = res.resp.user;
+          this.currNickname = this.userStored?.login;
         }
 
         return res;
@@ -118,7 +126,8 @@ export class AuthService {
     // localStorage.removeItem('expires_at');
     localStorage.clear();
     this.alert.info('You have been logged out successfully');
-    return this.http.get(env.backUrl + 'auth/track-logout');
+    console.log(this.currNickname);
+    return this.http.get(env.backUrl + `auth/track-logout?login=${this.currNickname}`);
   }
 
   getCountries()

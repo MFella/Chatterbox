@@ -38,7 +38,6 @@ export class ChatRoomComponent implements OnInit {
       // leave the current room!
       if(this.currentRoom)
       {
-        //this.messages = [];
         this.leftRoom();
       }
       //this.currentRoom = null;

@@ -19,4 +19,16 @@ export class NavComponent implements OnInit {
   {
 
   }
+
+  logout()
+  {
+    this.authServ.logout()
+    .subscribe((res: any) =>
+    {
+      console.log(res);
+    }, (err: any) =>
+    {
+      console.log(err);
+    })
+  }
 }

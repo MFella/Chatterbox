@@ -1,5 +1,11 @@
 import {BeforeInsert, BeforeUpdate, Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
 
+export enum RoleTypes{
+    GUEST_USER = 'GUEST',
+    REGISTERED_USER = 'USER',
+    ADMIN = 'ADMIN'
+}
+
 @Entity()
 export class Activity
 {
@@ -22,7 +28,14 @@ export class Activity
         nullable: false,
         default: new Date()
     })
-    timeOfLogout: Date;
+    timeOfLogout?: Date;
+
+    @Column({
+        type: 'enum',
+        nullable: false,
+        default: RoleTypes.GUEST_USER
+    })
+    roleType: RoleTypes;
 
     @Column({
         nullable: false
@@ -37,7 +50,7 @@ export class Activity
     isLoggedIn: boolean;
 
     @BeforeInsert()
-    @BeforeUpdate()
+    // @BeforeUpdate()
     updateIsLoggedIn()
     {
         this.isLoggedIn = true;
@@ -49,3 +62,4 @@ export class Activity
         }, 1000);
     }
 }
+

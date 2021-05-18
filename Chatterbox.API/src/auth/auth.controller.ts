@@ -8,6 +8,7 @@ import { UserForRegisterDto } from './dtos/userForRegister.dto';
 import { UserToReturnDto } from './dtos/userToReturn.dto';
 import {RealIP} from 'nestjs-real-ip';
 import { TrackLogoutDto } from './dtos/trackLogout.dto';
+import { TrackActivityDto } from './dtos/trackActivity.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -63,11 +64,20 @@ export class AuthController {
     }
 
     @Get('track-logout')
-    @HttpCode(200)
-    async trackLogout(@Query() query: TrackLogoutDto, @Res() res)
+    async trackLogout(@Query() query: TrackLogoutDto, @Res() res, @RealIP() ip: string)
     {   
+        console.log(query)
         const result = await this.authServ.trackLogout(query.login);
         res.send({'res': result});
+    }
+
+    @Get('track-activity')
+    async trackActivity(@Query() query: TrackActivityDto, @Res() res, @RealIP() ip: string)
+    {
+        console.log(query);
+        const resp =  await this.authServ.trackActivity(query, ip);
+        res.send({'res': resp});
+
     }
 
     @Get('check-nickname')
