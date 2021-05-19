@@ -241,7 +241,33 @@ export class AuthService {
             console.log(e);
             return false;
         }
+    }
 
+    async changeNick(changeNickDto: TrackActivityDto, newIp: any): Promise<boolean>
+    {
+        try{
+            const userFromRepo = await this.userRepository.findOne({login: changeNickDto.login});
+            const actFromRepo = await this.activeRepo.findOne({loginOrNick: changeNickDto.login});
+
+            if(userFromRepo)
+            {
+                const {login, ...restFromUser} = userFromRepo;
+                const {loginOrNick, ip, ...restFromAct} = actFromRepo;
+
+                await this.userRepository.update({login: changeNickDto.login}, {login: changeNickDto.newLogin, ...restFromUser});
+                await this.activeRepo.update({loginOrNick: changeNickDto.login}, {loginOrNick: changeNickDto.newLogin, ip: newIp, ...restFromAct});
+                return true;
+            }else
+            {
+                const {loginOrNick, ip, ...rest} = actFromRepo;
+
+                await this.activeRepo.update({loginOrNick: changeNickDto.login}, {loginOrNick: changeNickDto.login, ip:newIp, ...rest});
+                return true;
+            }
+        }catch(e)
+        {
+            return false;
+        }
 
     }
 

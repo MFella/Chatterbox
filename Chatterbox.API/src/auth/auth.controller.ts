@@ -1,4 +1,4 @@
-import {Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, Res} from '@nestjs/common';
+import {Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req, Res} from '@nestjs/common';
 import { User } from 'src/users/user.entity';
 import { AuthService } from './auth.service';
 import { CheckEmailDto } from './dtos/checkEmail.dto';
@@ -85,5 +85,12 @@ export class AuthController {
     {
         const result = await this.authServ.checkNameForRoom(query.login);
         res.send({'res': result});
+    }
+
+    @Put('change-nick')
+    async changeNick(@Body() changeNickDto: TrackActivityDto, @RealIP() ip: string, @Res() res)
+    {
+        const resp = await this.authServ.changeNick(changeNickDto, ip);
+        res.send({'res': resp});
     }
 }

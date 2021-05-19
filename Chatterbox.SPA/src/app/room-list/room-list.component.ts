@@ -36,15 +36,20 @@ export class RoomListComponent implements OnInit {
   {
     const nickToTrack = this.authServ.userStored ? this.authServ.userStored.login: localStorage.getItem('volatileNick');
     const roleToTrack = this.authServ.userStored ? RoleTypes.REGISTERED_USER : RoleTypes.GUEST_USER;
-    this.authServ.trackActivity(nickToTrack, roleToTrack)
-      .subscribe((res: any) =>
-      {
-        console.log(res);
 
-      }, (err: any) =>
-      {
-        console.log(err);
-      })
+    if(!nickToTrack)
+    {
+     this.authServ.currNick = this.authServ.generateNick(nickToTrack);
+    }
+
+    this.authServ.trackActivity(this.authServ.currNick, roleToTrack)
+    .subscribe((res: any) =>
+    {
+      console.log(res);
+
+    }, (err: any) =>
+    {
+      console.log(err);
+    })
   }
-
 }

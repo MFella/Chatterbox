@@ -8,6 +8,7 @@ import { UserForLoginDto } from '../dtos/userForLogin.dto';
 import { RoleTypes, UserStored } from '../_models/userStored.interface';
 import * as moment from 'moment';
 import { AlertService } from './alert.service';
+import { ChangeNickDto } from '../dtos/changeNick.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class AuthService {
   userStored!: UserStored | null;
   currNickname!: string | null | undefined;
 
-  private generateNick(volatileNick: string | null): string
+  generateNick(volatileNick: string | null): string
   {
 
     const fromStorage: string | null = localStorage.getItem('volatileNick') ;
@@ -37,8 +38,13 @@ export class AuthService {
     const random_suf: string = Math.random().toString(36).substring(5);
     const fullNick: string = "Guest_" + random_suf;
     localStorage.setItem('volatileNick', fullNick);
-
+    this.currNickname = volatileNick !== null ? volatileNick : fullNick;
     return volatileNick !== null ? volatileNick : fullNick;
+  }
+
+  public set currNick(newNickname: string)
+  {
+    this.currNickname = newNickname;
   }
 
   trackActivity(nickOrLogin: string | null, roleType: RoleTypes, newLogin?: string): Observable<boolean>
@@ -121,13 +127,17 @@ export class AuthService {
   logout()
   {
     this.userStored = null;
-    // localStorage.removeItem('user');
-    // localStorage.removeItem('id_token');
-    // localStorage.removeItem('expires_at');
     localStorage.clear();
     this.alert.info('You have been logged out successfully');
     console.log(this.currNickname);
     return this.http.get(env.backUrl + `auth/track-logout?login=${this.currNickname}`);
+  }
+
+  changeVolatileNickname(changeNickDto: ChangeNickDto): Observable<boolean>
+  {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post<boolean>(env.backUrl + `auth/change-nick`, changeNickDto, {headers});
   }
 
   getCountries()

@@ -90,7 +90,6 @@ export class ChatRoomComponent implements OnInit {
 
   public async joinRoom()
   {
-    //console.log(localStorage.getItem('volatileNick'));
 
     if(this.authServ.userStored === null && localStorage.getItem('volatileNick') === null)
     {
@@ -119,12 +118,6 @@ export class ChatRoomComponent implements OnInit {
               })
 
               this.chatServ.joinRoom(toSend);
-              // this.chatServ.getConfirmationOfJoin()
-              // .subscribe((room: string) =>
-              // {
-              //   console.log(`Connected to room: ${room}`);
-              //   this.currentRoom = room;
-              // });
   
             }else
             {
@@ -163,24 +156,6 @@ export class ChatRoomComponent implements OnInit {
         })
         this.chatServ.joinRoom(toSend);
       }
-
-      // this.chatServ.getConfirmationOfJoin()
-      // .subscribe((room: string) =>
-      // {
-      //   console.log(`Connected to room: ${room}`);
-      //   this.currentRoom = room;
-      // });
-
-      // this.chatServ.getMessageFromRoom(this.currentRoom ?? '')
-      // .subscribe((msg: any) =>
-      // {
-      //   console.log(msg);
-
-      // }, (err: any) =>
-      // {
-      //   console.log(err);
-      // });
-
     }
   }
 
