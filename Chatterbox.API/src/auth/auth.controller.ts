@@ -1,4 +1,4 @@
-import {Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req, Res} from '@nestjs/common';
+import {Body, Controller, Get, Headers, HttpCode, HttpStatus, Post, Put, Query, Req, Res} from '@nestjs/common';
 import { User } from 'src/users/user.entity';
 import { AuthService } from './auth.service';
 import { CheckEmailDto } from './dtos/checkEmail.dto';
@@ -83,14 +83,18 @@ export class AuthController {
     @Get('check-nickname')
     async checkNickname(@Query() query: CheckLoginDto, @Res() res)
     {
-        const result = await this.authServ.checkNameForRoom(query.login);
-        res.send({'res': result});
+        return await this.authServ.checkNameForRoom(query.login);
     }
 
     @Put('change-nick')
-    async changeNick(@Body() changeNickDto: TrackActivityDto, @RealIP() ip: string, @Res() res)
+    async changeNick(@Body() changeNickDto: TrackActivityDto, @RealIP() ip: string)
     {
-        const resp = await this.authServ.changeNick(changeNickDto, ip);
-        res.send({'res': resp});
+        return await this.authServ.changeNick(changeNickDto, ip);
+    }
+
+    @Get('is-token-expired')
+    async isTokenExpired(@Headers() headers)
+    {
+        return await this.authServ.isTokenExpired(headers['authorization']);
     }
 }

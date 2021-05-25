@@ -41,8 +41,8 @@ export class RoomListComponent implements OnInit {
     {
      this.authServ.currNick = this.authServ.generateNick(nickToTrack);
     }
-
-    this.authServ.trackActivity(this.authServ.currNick, roleToTrack)
+    
+    this.authServ.trackActivity(this.authServ.currNickname, roleToTrack)
     .subscribe((res: any) =>
     {
       console.log(res);

@@ -7,7 +7,7 @@
         </div>
         <div class="card-header d-flex align-items-center justify-content-between" *ngIf="this.pickedRoom!._id.length !== 0">
           <span>Current room name is: {{this.pickedRoom?.name}}</span>
-          <span> <div class="logged_as" *ngIf="!this.authServ.userStored">Logged as</div>
+          <span *ngIf="!this.authServ.userStored"> <div class="logged_as">Logged as</div>
             <button class="btn btn-sm btn-outline-primary ml-2" (click)="changeNickname()"> {{this.authServ.currNickname}} <fa-icon [icon]="icons[3]"></fa-icon></button>
           </span>
         </div>

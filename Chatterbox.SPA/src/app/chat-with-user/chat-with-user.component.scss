@@ -1,0 +1,43 @@
+.container
+{
+    padding-top: 6rem;
+    min-height: 100vh;
+}
+
+.msg_input
+{
+    width: 90%;
+    margin-right: .5rem;
+}
+
+.card
+{
+    .card-body
+    {
+        min-height: 65vh;
+    }
+}
+
+ul.list-group
+{
+    border: 1px solid rgba(0,0,0,.25);
+    border-radius: .8rem;
+    margin-top: 2rem;
+    max-height: 20rem;
+    overflow-y: scroll;
+
+    li{
+
+        transition: all .4s;
+        &:hover
+        {
+            cursor: pointer;
+            background-color: rgba(121, 255, 210, 0.2);
+        }
+    }
+
+    &::-webkit-scrollbar {
+        width: 0;  /* Remove scrollbar space */
+        background: transparent;  /* Optional: just make scrollbar invisible */
+    }
+}

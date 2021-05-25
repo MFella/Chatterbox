@@ -1,6 +1,7 @@
-import { Logger } from "@nestjs/common";
+import { Logger, UseGuards } from "@nestjs/common";
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Socket, Server } from 'socket.io';
+import { RolesGuard } from "./auth/roles/roles.guard";
 import { MessageToRoomDto } from "./channel/dto/messageToRoom.dto";
 
 @WebSocketGateway(3101)
@@ -43,13 +44,23 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
         if(Object.values(client.rooms).includes(messageToRoomDto.roomId))
         {
-            //console.log(`Try to emit: ${messageToRoomDto.message}`);
-            //let {roomId, ...rest} = messageToRoomDto;
             this.server.to(messageToRoomDto.roomId).emit('getMessage', messageToRoomDto);
         }
-
     }
 
+    @SubscribeMessage('joinToUserRoom')
+    @UseGuards(RolesGuard)
+    async joinToUserRoom(@ConnectedSocket() client: Socket, @MessageBody() roomId: string): Promise<void>
+    {
+        client.join(roomId);
+    }
+
+    @SubscribeMessage('msgToUserRoom')
+    @UseGuards(RolesGuard)
+    async messageToUserRoom(@ConnectedSocket() client: Socket, @MessageBody() messageToUserRoomDto: MessageToRoomDto): Promise<void>
+    {
+        this.server.to(messageToUserRoomDto.roomId).emit('getMessage', messageToUserRoomDto);
+    }
 
     afterInit(server: Server)
     {
@@ -71,8 +82,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     @SubscribeMessage('joinRoom')
     handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() messageToRoomDto: MessageToRoomDto)
     {
-        console.log()
-        console.log(messageToRoomDto);
         client.join(messageToRoomDto.roomId);
         console.log(this.server)
         this.server.to(messageToRoomDto.roomId).emit('jointRoom', messageToRoomDto);

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { jwtConstans } from './constans';
 import { Activity, RoleTypes } from './entities/activity.entity';
 import { TrackActivityDto } from './dtos/trackActivity.dto';
+import { JwtVerificationDto } from './dtos/jwtVerification.dto';
 
 @Injectable()
 export class AuthService {
@@ -248,6 +249,11 @@ export class AuthService {
         try{
             const userFromRepo = await this.userRepository.findOne({login: changeNickDto.login});
             const actFromRepo = await this.activeRepo.findOne({loginOrNick: changeNickDto.login});
+            const posedLogin = await this.userRepository.findOne({login: changeNickDto.newLogin});
+
+            if(posedLogin){
+                return false;
+            } 
 
             if(userFromRepo)
             {
@@ -259,16 +265,65 @@ export class AuthService {
                 return true;
             }else
             {
-                const {loginOrNick, ip, ...rest} = actFromRepo;
 
-                await this.activeRepo.update({loginOrNick: changeNickDto.login}, {loginOrNick: changeNickDto.login, ip:newIp, ...rest});
+                if(!actFromRepo)
+                {
+                    const toCreate = {
+                        loginOrNick: changeNickDto.newLogin,
+                        roleType: changeNickDto.roleType,
+                        ip: newIp
+                    };
+                    await this.activeRepo.save(toCreate);
+                    return true;
+                }
+
+                const {loginOrNick, ip, ...rest} = actFromRepo;
+                
+                await this.activeRepo.update({loginOrNick: changeNickDto.login}, {...rest, loginOrNick: changeNickDto.login, ip:newIp});
                 return true;
             }
+         }catch(e)
+         {
+            return false;
+        }
+
+    }
+
+    async isTokenExpired(token: string | undefined)
+    {
+
+        try{
+            if(token === undefined || !token)
+            {
+                return false;
+            }
+            const res: JwtVerificationDto = this.jwtServ.verify(token.replace('Bearer ', ''));
+            console.log(res);
+
+            if(res)
+            {
+                const isValid = await this.userRepository.findOne(res._id);
+                if(!isValid)
+                {
+                    throw new HttpException('You are not allowed!', 400);
+                }
+                
+                if(isValid.login !== res.login)
+                {
+                    throw new HttpException('User not found!', 404);
+                }
+
+                const isExpired = ((new Date().getTime() / 1000) - res.exp) < 0 ? true : false;
+
+                return isExpired;
+            }
+
+            return false;
+            
         }catch(e)
         {
             return false;
         }
-
     }
 
 }

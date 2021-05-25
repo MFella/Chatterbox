@@ -113,16 +113,16 @@ export class RegisterComponent implements OnInit {
   {
     const forRegister = Object.assign({}, this.registerForm.value);
 
-    // this.authServ.register(forRegister)
-    // .subscribe(res =>
-    //   {
-    //     this.alert.success('You have been registered successfully!');
-    //     this.router.navigate([''])
-    //   }, err =>
-    //   {
-    //     console.log(err);
-    //     this.alert.error('Something went wrong');
-    //   })
+    this.authServ.register(forRegister)
+    .subscribe(res =>
+      {
+        this.alert.success('You have been registered successfully!');
+        this.router.navigate([''])
+      }, err =>
+      {
+        console.log(err);
+        this.alert.error('Something went wrong');
+      })
     console.log(this.registerForm.get('login')?.errors?.loginNotAvailable)
   }
 

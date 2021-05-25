@@ -2,8 +2,10 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faEnvelope, faHandshake, faSignOutAlt, faCogs } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
+import { ChangeNickDto } from '../dtos/changeNick.dto';
 import { MessageToRoomDto, TYPE_OF_ACTION } from '../dtos/messageToRoom.dto';
 import { RoomDto } from '../dtos/room.dto';
+import { RoleTypes } from '../_models/userStored.interface';
 import { AlertService } from '../_services/alert.service';
 import { AuthService } from '../_services/auth.service';
 import { ChatService } from '../_services/chat.service';
@@ -226,27 +228,31 @@ export class ChatRoomComponent implements OnInit {
     const result = await this.sweety.changeVolatileNickname(this.authServ.currNickname ?? '');
     console.log(result);
 
-    if(!/^[a-zA-Z0-9_.-]*$/.test(result))
+    if(result.length === 0) return;
+
+    if(!/^[a-zA-Z0-9_.-]*$/.test(result) || result.length < 5)
     {
       this.alert.error('Nickname has inappropriate pattern');
     }else{
 
-      this.authServ.checkAvailabilityOfLogin(result)
+      const changeNickDto: ChangeNickDto = {
+        login: this.authServ.currNickname ?? '',
+        newLogin: result,
+        roleType: this.authServ.userStored? RoleTypes.REGISTERED_USER : RoleTypes.GUEST_USER
+      }
+      this.authServ.changeVolatileNickname(changeNickDto)
       .subscribe((res: boolean) => 
       {
         if(res)
         {
           localStorage.clear();
           localStorage.setItem('volatileNick', result);
-          this.authServ.currNickname = result;
+          this.authServ.currNick = result;
           this.alert.success('Nickname has been changed!');
-        }
+        }else{
 
-        console.log('available');
-        console.log(res);
-        if(!res)
-        {
           this.alert.error('This nick is already taken. Try another one.');
+
         }
       }, (err: any) =>
       {

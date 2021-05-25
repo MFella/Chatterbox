@@ -8,14 +8,11 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav w-100">
-        <!-- <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Themes <span class="caret"></span></a>
-        </li> -->
         <li class="nav-item" >
           <a class="nav-link" [routerLink]="['room-list']" [routerLinkActive]="['is-active']"><fa-icon [icon]="icons[1]"></fa-icon>Room list</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link"><fa-icon [icon]="icons[4]"></fa-icon>Chat with user</a>
+          <a class="nav-link" [routerLink]="['chat-with-user']"><fa-icon [icon]="icons[4]"></fa-icon>Chat with user</a>
         </li>
         <li class="nav-item"  *ngIf="this.authServ.userStored === null || this.authServ.userStored === undefined">
           <a class="nav-link" [routerLink]="['login']" [routerLinkActive]="['is-active']"><fa-icon [icon]="icons[2]"></fa-icon>Login</a>
@@ -27,9 +24,7 @@
           <a class="nav-link"><fa-icon [icon]="icons[3]"></fa-icon>About</a>
         </li>
         <li class="nav-item ml-auto" *ngIf="this.authServ.userStored !== null && this.authServ.userStored !== undefined">
-          <!-- <a class="nav-link"><fa-icon [icon]="icons[0]"></fa-icon>Hi {{this.authServ.userStored?.name}}</a> -->
           <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
-            <!-- <button class="btn btn-outline-primary mr-2" id="dropdownManual" ngbDropdownAnchor (focus)="myDrop.open()">Toggle dropdown</button> -->
             <button class="nav-link btn btn-outline-primary d-flex flex-column align-items-center user_button" 
             id="dropdownManual" ngbDropdownAnchor (focus)="myDrop.open()">
               <fa-icon [icon]="icons[0]"></fa-icon>Hi {{this.authServ.userStored?.name}}</button>
@@ -42,17 +37,6 @@
             </div>
           </div>     
         </li>
-
-        <!-- <li class="nav-item" ngbDropdown>
-          <a class="nav-link" tabindex="0" ngbDropdownToggle id="navbarDropdown2" role="button">
-            Static right
-          </a>
-          <div ngbDropdownMenu aria-labelledby="navbarDropdown2" class="dropdown-menu dropdown-menu-right">
-            <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Action</a>
-            <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Another action</a>
-            <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Something else here</a>
-          </div>
-        </li> -->
       </ul>
     </div>
   </div>

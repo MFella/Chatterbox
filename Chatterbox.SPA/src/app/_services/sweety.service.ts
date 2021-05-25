@@ -22,12 +22,7 @@ export class SweetyService {
       showCloseButton: true
     });
 
-    if(nick === undefined)
-    {
-      return '';
-    }
-
-    return nick;
+    return nick ?? '';
   }
 
   async changeVolatileNickname(currNickname: string): Promise<string>
@@ -42,11 +37,10 @@ export class SweetyService {
       showCloseButton: true
     });
 
-    if(nick === undefined)
-    {
-      return '';
-    }
-    return nick;
+    console.log(nick);
+
+    return nick ?? '';
     
   }
 }
+// TODO: change of nickname = change of nick in activeRepo

@@ -38,7 +38,6 @@ export class AuthService {
     const random_suf: string = Math.random().toString(36).substring(5);
     const fullNick: string = "Guest_" + random_suf;
     localStorage.setItem('volatileNick', fullNick);
-    this.currNickname = volatileNick !== null ? volatileNick : fullNick;
     return volatileNick !== null ? volatileNick : fullNick;
   }
 
@@ -47,7 +46,7 @@ export class AuthService {
     this.currNickname = newNickname;
   }
 
-  trackActivity(nickOrLogin: string | null, roleType: RoleTypes, newLogin?: string): Observable<boolean>
+  trackActivity(nickOrLogin: string | null | undefined, roleType: RoleTypes, newLogin?: string): Observable<boolean>
   {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
@@ -137,7 +136,7 @@ export class AuthService {
   {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
-    return this.http.post<boolean>(env.backUrl + `auth/change-nick`, changeNickDto, {headers});
+    return this.http.put<boolean>(env.backUrl + `auth/change-nick`, changeNickDto, {headers});
   }
 
   getCountries()
@@ -163,5 +162,9 @@ export class AuthService {
     )
   }
 
+  isTokenExpired()
+  {
+    return this.http.get<boolean>(env.backUrl + 'auth/is-token-expired');
+  }
 
 }

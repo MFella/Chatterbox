@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppGateway } from './app.gateway';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { RolesGuard } from './auth/roles/roles.guard';
 import { ChannelModule } from "./channel/channel.module"
-import { SeederModule } from './channel/seeder/seeder.module';
 
 @Module({
   imports: [
@@ -16,6 +17,9 @@ import { SeederModule } from './channel/seeder/seeder.module';
     ChannelModule
   ],
   controllers: [AppController],
-  providers: [AppService, AppGateway],
+  providers: [AppService, AppGateway,
+  {
+    provide: APP_GUARD, useClass: RolesGuard
+  }],
 })
 export class AppModule {}
