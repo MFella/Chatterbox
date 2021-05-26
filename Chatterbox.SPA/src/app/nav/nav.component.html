@@ -12,7 +12,7 @@
           <a class="nav-link" [routerLink]="['room-list']" [routerLinkActive]="['is-active']"><fa-icon [icon]="icons[1]"></fa-icon>Room list</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="['chat-with-user']"><fa-icon [icon]="icons[4]"></fa-icon>Chat with user</a>
+          <a class="nav-link" [routerLink]="['chat-with-user']" [routerLinkActive]="['is-active']"><fa-icon [icon]="icons[4]"></fa-icon>Chat with user</a>
         </li>
         <li class="nav-item"  *ngIf="this.authServ.userStored === null || this.authServ.userStored === undefined">
           <a class="nav-link" [routerLink]="['login']" [routerLinkActive]="['is-active']"><fa-icon [icon]="icons[2]"></fa-icon>Login</a>
@@ -21,7 +21,13 @@
           <a class="nav-link" [routerLink]="['register']" [routerLinkActive]="['is-active']"><fa-icon [icon]="icons[5]"></fa-icon>Register</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link"><fa-icon [icon]="icons[3]"></fa-icon>About</a>
+          <a class="nav-link"><fa-icon [icon]="icons[3]" [routerLinkActive]="['is-active']"></fa-icon>About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['messages']" [routerLinkActive]="['is-active']"><fa-icon [icon]="icons[9]"></fa-icon>Inbox</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['send-message']" [routerLinkActive]="['is-active']"><fa-icon [icon]="icons[10]"></fa-icon>Send</a>
         </li>
         <li class="nav-item ml-auto" *ngIf="this.authServ.userStored !== null && this.authServ.userStored !== undefined">
           <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
@@ -30,7 +36,8 @@
               <fa-icon [icon]="icons[0]"></fa-icon>Hi {{this.authServ.userStored?.name}}</button>
 
             <div ngbDropdownMenu aria-labelledby="dropdownManual" class="dropdown-menu dropdown-menu-right">
-              <button ngbDropdownItem class="d-flex flex-row justify-content-between" [routerLink]="['my-profile']">My profile <fa-icon [icon]="icons[7]"></fa-icon></button>
+              <button ngbDropdownItem class="d-flex flex-row justify-content-between" [routerLink]="['profile']" [queryParams]="{id: this.authServ.userStored._id}">
+                My profile <fa-icon [icon]="icons[7]"></fa-icon></button>
               <button ngbDropdownItem class="d-flex flex-row justify-content-between">Latest chat <fa-icon [icon]="icons[8]"></fa-icon></button>
               <hr class="my-1">
               <button ngbDropdownItem class="d-flex flex-row justify-content-between" (click)="logout()">Logout <fa-icon [icon]="icons[6]"></fa-icon></button>

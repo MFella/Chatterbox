@@ -1,0 +1,9 @@
+export interface Profile{
+    country: string;
+    dateOfBirth: string;
+    email: string;
+    login: string;
+    name: string;
+    surname: string;
+    _id: string;
+}

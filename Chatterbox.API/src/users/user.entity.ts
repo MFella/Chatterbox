@@ -44,4 +44,8 @@ export class User
     })
     password: Buffer;
 
+    @Column({
+        nullable: false
+    })
+    friends: ObjectID[]
 }

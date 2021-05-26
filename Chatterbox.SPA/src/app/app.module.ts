@@ -26,11 +26,13 @@ import { ChannelListResolver } from './_resolvers/channel-list.resolver';
 import {PopoverModule} from 'ngx-bootstrap/popover';
 import { ToAgoTimePipe } from './_pipes/toAgoTime.pipe';
 import { ChatWithUserComponent } from './chat-with-user/chat-with-user.component';
+import { ProfileComponent } from './profile/profile.component';
+import { InboxComponent } from './inbox/inbox.component';
 
 const config: SocketIoConfig = {url: `${environment.socketBackUrl}/chat`, options: {transports: ['websocket'], allowUpgrades: true}};
 
 @NgModule({
-  declarations: [								
+  declarations: [											
     AppComponent,
       NavComponent,
       HomeComponent,
@@ -40,7 +42,9 @@ const config: SocketIoConfig = {url: `${environment.socketBackUrl}/chat`, option
       RoomListComponent,
       ChatRoomComponent,
       ToAgoTimePipe,
-      ChatWithUserComponent
+      ChatWithUserComponent,
+      ProfileComponent,
+      InboxComponent
    ],
   imports: [
     BrowserModule,

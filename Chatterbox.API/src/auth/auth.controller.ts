@@ -9,6 +9,7 @@ import { UserToReturnDto } from './dtos/userToReturn.dto';
 import {RealIP} from 'nestjs-real-ip';
 import { TrackLogoutDto } from './dtos/trackLogout.dto';
 import { TrackActivityDto } from './dtos/trackActivity.dto';
+import { GetProfileDto } from './dtos/getProfile.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -96,5 +97,11 @@ export class AuthController {
     async isTokenExpired(@Headers() headers)
     {
         return await this.authServ.isTokenExpired(headers['authorization']);
+    }
+    
+    @Get('profile')
+    async getProfileDetails(@Query() query: GetProfileDto)
+    {
+       return await this.authServ.getProfileDeatails(query);
     }
 }

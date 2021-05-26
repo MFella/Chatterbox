@@ -7,17 +7,16 @@ import { MessageToRoomDto } from "./channel/dto/messageToRoom.dto";
 @WebSocketGateway(3101)
 export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
 
-    @WebSocketServer() server: Server;
+    @WebSocketServer() server: any;
     
     // connectedClients: Socket[] = [];
 
     private logger: Logger = new Logger('AppGateway');
+    public storedAllUsers: Object[] = [];
 
     @SubscribeMessage('msgToServer')
     async handleMessage(@MessageBody() data: string): Promise<void>
     {
-        //console.log(data);
-        //this.server.emit('msgToClient', data);
         console.log(data);
         this.server.emit('msgToClient', data);
     }
@@ -25,9 +24,8 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     @SubscribeMessage('join')
     async joinToRoom(@ConnectedSocket()client: Socket, @MessageBody() room: string): Promise<void>
     {
-        //console.log(client);
         client.join(room);
-        this.logger.log(`Client joint to room ${room}`)
+        console.log(room);
         this.server.emit('afterJoin', room);
     }
 
@@ -44,6 +42,8 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
         if(Object.values(client.rooms).includes(messageToRoomDto.roomId))
         {
+            // console.log(this.server.eio.clientsCount);
+            // total - wszyscy połączeni
             this.server.to(messageToRoomDto.roomId).emit('getMessage', messageToRoomDto);
         }
     }
@@ -83,17 +83,22 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() messageToRoomDto: MessageToRoomDto)
     {
         client.join(messageToRoomDto.roomId);
-        console.log(this.server)
+
+        console.log(messageToRoomDto);
+        this.storedAllUsers.push({roomId: messageToRoomDto.roomId, nickname: messageToRoomDto.nickname});
         this.server.to(messageToRoomDto.roomId).emit('jointRoom', messageToRoomDto);
         this.logger.log("NICE");
-        //client.emit('joinedRoom', room);
     }
 
     @SubscribeMessage('leaveRoom')
     handleLeaveRoom(@ConnectedSocket() client: Socket, @MessageBody() messageToRoomDto: MessageToRoomDto)
     {
+        console.log(this.storedAllUsers);
         this.server.to(messageToRoomDto.roomId).emit('leftRoom', messageToRoomDto);
-        //client.emit('leftRoom', messageToRoomDto.roomId);
+        this.storedAllUsers = this.storedAllUsers.filter((el: any) => {
+            return el.roomId !== messageToRoomDto.roomId && el.nickname !== messageToRoomDto.nickname
+        });
+        console.log(this.storedAllUsers);
         client.leave(messageToRoomDto.roomId);
     }
 

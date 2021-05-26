@@ -1,0 +1,66 @@
+<div class="container">
+  <div class="row pt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex justify-content-center w-100">
+            <h3 class="m-0">Profile</h3>
+          </div>
+        </div>
+        <div class="card-body">
+
+          <div class="row">
+            <div class="col-md-4 col-xs-12">
+              <img src="https://yt3.ggpht.com/ytc/AAUvwnj52PGQw0qg3IL_Eu_wAkWHE7GY7eNG8W8qrgtcwA=s900-c-k-c0x00ffffff-no-rj" alt="User's avatar"
+              class="user_avatar">
+            </div>
+            <div class="col-md-8 col-xs-12">
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="user_name">Name</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="name" value="{{this.profile?.name}}" disabled>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="user_surname">Surname</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="surname" value="{{this.profile?.surname}}" disabled>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="user_country">Country</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="country" value="{{this.profile?.country}}" disabled>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="user_dateOfBirth">Date of birth</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" 
+                    value="{{this.profile?.dateOfBirth?.split('T')![0]}}" disabled>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="user_login">Your login</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{this.profile?.login}}" disabled>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="user_email">Your email</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{this.profile?.email}}" disabled>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

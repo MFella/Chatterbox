@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
@@ -11,6 +11,7 @@ import { jwtConstans } from './constans';
 import { Activity, RoleTypes } from './entities/activity.entity';
 import { TrackActivityDto } from './dtos/trackActivity.dto';
 import { JwtVerificationDto } from './dtos/jwtVerification.dto';
+import { GetProfileDto } from './dtos/getProfile.dto';
 
 @Injectable()
 export class AuthService {
@@ -324,6 +325,22 @@ export class AuthService {
         {
             return false;
         }
+    }
+
+    async getProfileDeatails(getProfileDto: GetProfileDto)
+    {
+        const userFromRepo = await this.userRepository.findOne(getProfileDto.id);
+
+        console.log(getProfileDto);
+        console.log(userFromRepo);
+        if(!userFromRepo)
+        {
+            throw new HttpException('User with that id is not exist', 404);
+        }
+
+        const {password, ...rest} = userFromRepo;
+
+        return rest;
     }
 
 }

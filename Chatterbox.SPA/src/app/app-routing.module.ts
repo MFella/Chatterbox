@@ -8,14 +8,19 @@ import { RegisterComponent } from './register/register.component';
 import { RoomListComponent } from './room-list/room-list.component';
 import { ChannelListResolver } from './_resolvers/channel-list.resolver';
 import { AuthGuard } from './_guards/auth.guard';
+import { ProfileComponent } from './profile/profile.component';
+import { ProfileResolver } from './_resolvers/profile.resolver';
+import { InboxComponent } from './inbox/inbox.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'my-profile', component: MyProfileComponent},
+  {path: 'profile', component: ProfileComponent, resolve: {profile: ProfileResolver}},
   {path: 'room-list', component: RoomListComponent, resolve: {rooms: ChannelListResolver}},
-  {path: 'chat-with-user', component: ChatWithUserComponent, canActivate: [AuthGuard]}
+  {path: 'chat-with-user', component: ChatWithUserComponent, canActivate: [AuthGuard]},
+  {path: 'messages', component: InboxComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({

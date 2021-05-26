@@ -162,6 +162,14 @@ export class AuthService {
     )
   }
 
+  getProfileDetails(id: string)
+  {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
+    console.log('xd')
+    return this.http.get(env.backUrl + `auth/profile?id=${id}`, {headers});
+  }
+
   isTokenExpired()
   {
     return this.http.get<boolean>(env.backUrl + 'auth/is-token-expired');

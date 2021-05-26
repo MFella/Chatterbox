@@ -39,10 +39,7 @@ export class ChatService{
 
   public sendMessageToRoom(msg: MessageToRoomDto) 
   {
-    // this.socket.on(roomId, (msg: string) =>
-    // {
-    //   this.socket.to(roomId).emit(roomId, msg);
-    // })
+    console.log(this.socket);
     this.socket.emit("messageToRoom", msg);
 
   }
