@@ -35,6 +35,16 @@ export class AuthService {
         return !await this.userRepository.findOne({email});
     }
 
+    async getByLogin(login: string)
+    {
+        const user = await this.userRepository.findOne({login});
+        if(user)
+        {
+            return user;
+        }
+        throw new NotFoundException('User with this id does not exist!');
+    }
+
     async registerUser(userForRegisterDto: UserForRegisterDto)
     {
 

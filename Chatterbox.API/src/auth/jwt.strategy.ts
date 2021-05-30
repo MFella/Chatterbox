@@ -21,11 +21,13 @@ export class JwtStrategy extends PassportStrategy(Strategy)
 
     async validate(userForLoginDto: UserForLoginDto): Promise<UserToReturnDto | boolean>
     {
-        const user = await this.authService.validateUser(userForLoginDto);
-        if(!user)
-        {
-            throw new UnauthorizedException();
-        }
-        return user;
+        // console.log(userForLoginDto);
+        // const user = await this.authService.validateUser(userForLoginDto);
+        // if(!user)
+        // {
+        //     throw new UnauthorizedException();
+        // }
+        // return user;
+        return this.authService.getByLogin(userForLoginDto.login);
     }
 }

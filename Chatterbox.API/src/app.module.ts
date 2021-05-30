@@ -8,13 +8,15 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { RolesGuard } from './auth/roles/roles.guard';
 import { ChannelModule } from "./channel/channel.module"
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(), 
     TypeOrmModule.forRoot(), 
     AuthModule,
-    ChannelModule
+    ChannelModule,
+    MessageModule
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway,

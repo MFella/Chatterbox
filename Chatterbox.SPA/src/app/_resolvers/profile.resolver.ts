@@ -26,10 +26,6 @@ export class ProfileResolver implements Resolve<Object> {
       this.alert.error('Invalid id of user');
       this.router.navigate(['']);
       return of({});
-    }))
-    // .catch((error: any) => 
-    // {
-    //   console.log(`Error: ${error}`);
-    // })
+    }));
   }
 }

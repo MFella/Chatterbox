@@ -17,13 +17,37 @@
         </li>
       </ul>
     </div>
-    <div class="col-md-9 col-xs-12">
+    <div class="col-md-9 col-xs-12 d-flex flex-column align-items-center">
       <h3 class="d-flex justify-content-center">Content</h3>
-      <div class="card">
+      <div class="card w-75">
         <div class="card-body">
-          <h5 class="card-title">Special title treatment</h5>
-          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
+          <h5 class="card-title d-flex flex-row justify-content-between">Subject: What you want? <span>Author: $Some_User</span></h5>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.
+            With supporting text below as a natural lead-in to additional content.
+            With supporting text below as a natural lead-in to additional content.
+            With supporting text below as a natural lead-in to additional content.
+            With supporting text below as a natural lead-in to additional content.
+          </p>
+          <p class="card-text">Cheers mate. Bye!</p>
+        </div>
+      </div>
+      <div class="card text-white bg-primary mt-3 w-50 text-center">
+        <div class="card-header">Invitation from $Some_User</div>
+        <div class="card-body">
+          <h5 class="card-title">$Some_User wants to be your friend!</h5>
+          <div class="d-flex flex-row justify-content-around">
+            <button class="btn btn-info btn-sm">Accept <fa-icon [icon]="icons[0]"></fa-icon></button>
+            <button class="btn btn-danger btn-sm">Decline <fa-icon [icon]="icons[1]"></fa-icon></button>
+          </div>
+        </div>
+      </div>
+      <div class="card text-white bg-danger mt-3 w-50 text-center">
+        <div class="card-header">You have been deleted!</div>
+        <div class="card-body">
+          <h5 class="card-title">$Some_User has deleted you from friends!</h5>
+          <div class="d-flex flex-row justify-content-around">
+            <button class="btn btn-info btn-sm">OK <fa-icon [icon]="icons[0]"></fa-icon></button>
+          </div>
         </div>
       </div>
     </div>

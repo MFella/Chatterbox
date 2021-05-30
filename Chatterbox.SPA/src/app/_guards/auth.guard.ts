@@ -22,7 +22,7 @@ export class AuthGuard implements CanActivate {
         {
           this.authServ.currNickname = null;
           this.authServ.userStored = null;
-          // this.authServ.logout();
+          this.authServ.logout();
           this.router.navigate(['']);
         }
         return res;

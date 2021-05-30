@@ -127,8 +127,6 @@ export class AuthService {
   {
     this.userStored = null;
     localStorage.clear();
-    this.alert.info('You have been logged out successfully');
-    console.log(this.currNickname);
     return this.http.get(env.backUrl + `auth/track-logout?login=${this.currNickname}`);
   }
 

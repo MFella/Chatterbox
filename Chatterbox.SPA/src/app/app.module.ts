@@ -28,11 +28,13 @@ import { ToAgoTimePipe } from './_pipes/toAgoTime.pipe';
 import { ChatWithUserComponent } from './chat-with-user/chat-with-user.component';
 import { ProfileComponent } from './profile/profile.component';
 import { InboxComponent } from './inbox/inbox.component';
+import { SendMessageComponent } from './send-message/send-message.component';
+import { UserListResolver } from './_resolvers/user-list.resolver';
 
 const config: SocketIoConfig = {url: `${environment.socketBackUrl}/chat`, options: {transports: ['websocket'], allowUpgrades: true}};
 
 @NgModule({
-  declarations: [											
+  declarations: [												
     AppComponent,
       NavComponent,
       HomeComponent,
@@ -44,7 +46,8 @@ const config: SocketIoConfig = {url: `${environment.socketBackUrl}/chat`, option
       ToAgoTimePipe,
       ChatWithUserComponent,
       ProfileComponent,
-      InboxComponent
+      InboxComponent,
+      SendMessageComponent
    ],
   imports: [
     BrowserModule,
@@ -63,6 +66,7 @@ const config: SocketIoConfig = {url: `${environment.socketBackUrl}/chat`, option
   ],
   providers: [
     ChannelListResolver,
+    UserListResolver,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

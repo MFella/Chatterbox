@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { faCheck, faTimes, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-inbox',
   templateUrl: './inbox.component.html',
@@ -9,6 +9,8 @@ export class InboxComponent implements OnInit {
 
   constructor() { }
 
+  public icons: Array<IconDefinition> = [faCheck, faTimes];
+  
   ngOnInit() {
   }
 
