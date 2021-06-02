@@ -22,6 +22,12 @@ export class Message
     typeOfMessage: TypeOfMessage;
 
     @Column({
+        nullable: false,
+        default: new Date()
+    })
+    creationDate: Date;
+
+    @Column({
         nullable: false
     })
     title: string;

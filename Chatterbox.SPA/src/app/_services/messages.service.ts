@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {environment as env} from '../../environments/environment';
+import { MessageToReturnDto } from '../dtos/messageToReturn.dto';
 import { MessageToSendDto } from '../dtos/messageToSend.dto';
 import { UserListRecordDto } from '../dtos/userListRecord.dto';
 
@@ -19,8 +20,13 @@ export class MessagesService {
     return this.http.get<UserListRecordDto[]>(env.backUrl + `message/all-users`);
   }
 
-  sendMessage(messageToSendDto: MessageToSendDto)
+  sendMessage(messageToSendDto: MessageToSendDto): Observable<boolean>
   {
-    return this.http.post(env.backUrl + 'message', messageToSendDto);
+    return this.http.post<boolean>(env.backUrl + 'message', messageToSendDto);
+  }
+
+  getMessages(): Observable<MessageToReturnDto[]>
+  {
+    return this.http.get<MessageToReturnDto[]>(env.backUrl + 'message/all');
   }
 }

@@ -1,10 +1,10 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { BadGatewayException, BadRequestException, HttpException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/users/user.entity";
 import { createQueryBuilder, Repository } from "typeorm";
 import { MessageToCreateDto } from "./dtos/messageToCreate.dto";
 import { MessageToReturnDto } from "./dtos/messageToReturn.dto";
-import { Message } from "./message.entity";
+import { Message, TypeOfMessage } from "./message.entity";
 
 @Injectable()
 export class MessageService{
@@ -17,21 +17,38 @@ export class MessageService{
     )
     {}
 
-    async createMessage(messageToCreateDto: MessageToCreateDto)
+    async createMessage(messageToCreateDto: MessageToCreateDto, senderId: string): Promise<boolean | HttpException>
     {
         try{
-            const senderFromRepo = await this.usersRepo.findOne(messageToCreateDto.senderId);
+            const senderFromRepo = await this.usersRepo.findOne(senderId);
             const receiverFromRepo = await this.usersRepo.findOne(messageToCreateDto.receiverId);
+
+            if(messageToCreateDto.typeOfMessage === TypeOfMessage.INVITATION || messageToCreateDto.typeOfMessage === TypeOfMessage.DELETION)
+            {
+                const hipoInvitationFromRepo = await this.messageRepo.findOne({receiverId: messageToCreateDto.receiverId, senderId});
+                if(hipoInvitationFromRepo)
+                {
+                    throw new BadRequestException(`${messageToCreateDto.typeOfMessage} has been sent ealier. Pay attention`);
+                }
+            }
 
             if(!senderFromRepo || !receiverFromRepo)
             {
                 throw new NotFoundException('Cant send message - invalid id of sender/receiver');
             }
 
-            await this.messageRepo.save(messageToCreateDto);
+            await this.messageRepo.save({...messageToCreateDto, senderId});
+
+            return true;
 
         }catch(e)
         {
+            console.log(e);
+            if(e?.status)
+            {
+                throw new HttpException(e?.message, e.status);
+            }
+
             throw new InternalServerErrorException("Error occured during saving message");
         }
 
@@ -42,14 +59,18 @@ export class MessageService{
         try{
             const messages = await this.messageRepo.find({receiverId: userId});
 
+            console.log(messages);
             const messagesWithAuthors = [];
-            messages.forEach(async(el: Message) => {
-                let sender = await this.usersRepo.findOne(el.senderId);
-                const {password, country, dateOfBirth, ...rest} = sender;
-                messagesWithAuthors.push({...rest, ...el});
-            });
+
+            for(let item of messages)
+            {
+                let sender = await this.usersRepo.findOne(item.senderId);
+                const {password, country, dateOfBirth, email, friends, ...rest} = sender;
+                messagesWithAuthors.push({...rest, ...item});
+            }
 
             return messagesWithAuthors;
+
         }catch(e)
         {
             throw new InternalServerErrorException("Error occured during retriving messages");

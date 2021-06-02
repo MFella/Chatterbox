@@ -24,6 +24,13 @@ export class MessageController {
     async sendMessage(@Req() req, @Body() messageToCreateDto: MessageToCreateDto)
     {
         console.log(messageToCreateDto);
-        // return await this.messageServ.createMessage(messageToCreateDto);
+        return await this.messageServ.createMessage(messageToCreateDto, req.user._id.toString());
     } 
+
+    @Get('all')
+    @UseGuards(JwtAuthGuard)
+    async getMyMessages(@Req() req)
+    {
+        return await this.messageServ.getMessages(req.user._id.toString());
+    }
 }

@@ -1,15 +1,12 @@
-import {ObjectID} from 'typeorm';
-import { TypeOfMessage } from '../message.entity';
-
-export class MessageToReturnDto
+export interface MessageToReturnDto
 {
-    _id: ObjectID;
+    _id: string;
     name: string;
     surname: string;
     login: string;
     senderId: string;
     receiverId: string;
-    typeOfMessage: TypeOfMessage;
+    typeOfMessage: string;
     creationDate: Date;
     title: string;
     content: string;

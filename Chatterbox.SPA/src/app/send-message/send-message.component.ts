@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, ElementRef, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageToSendDto } from '../dtos/messageToSend.dto';
 import { ResolvedUserListDto } from '../dtos/resolvedUserList.dto';
 import { UserListRecordDto } from '../dtos/userListRecord.dto';
+import { AlertService } from '../_services/alert.service';
 import { MessagesService } from '../_services/messages.service';
 
 @Component({
@@ -13,10 +15,14 @@ import { MessagesService } from '../_services/messages.service';
 })
 export class SendMessageComponent implements OnInit {
 
+  @ViewChild('contentMsg') contentMsg!: ElementRef;
   userList: UserListRecordDto[] = [];
+  savedNormalMessage: string = '';
   messageForm!: FormGroup;
 
-  constructor(private route: ActivatedRoute, private fb: FormBuilder, private msgServ: MessagesService) { }
+
+  constructor(private route: ActivatedRoute, private fb: FormBuilder, private msgServ: MessagesService,
+    private alert: AlertService) { }
 
   ngOnInit() {
 
@@ -29,40 +35,68 @@ export class SendMessageComponent implements OnInit {
       this.initForm();
     })
 
-    setTimeout(() => 
-    {
-      console.log(this.userList);
-    }, 500)
   }
 
   initForm()
   {
     this.messageForm = this.fb.group({
       typeOfMessage: ['NORMAL_MESSAGE', [Validators.required]],
-      receiver: [, [Validators.required]],
+      receiverId: [, [Validators.required]],
       subject: ['', [Validators.required, Validators.nullValidator]],
-      contentNormal: ['', [Validators.required]],
-      contentInvitation: ['Hello buddy, I want to be your friend. Cheers!', [Validators.required]],
-      contentDeletion: ['I have to remove you. Sorry about that.', [Validators.required]]
+      content: ['', [Validators.required]],
+      // contentInvitation: ['Hello buddy, I want to be your friend. Cheers!', [Validators.required]],
+      // contentDeletion: ['I have to remove you. Sorry about that.', [Validators.required]]
     })
   }
 
   onSubmit()
   {
-    console.log(this.messageForm.get('typeOfMessage')?.value);
-    const {contentNormal, contentInvitation, contentDeletion, ...rest} = this.messageForm.value;
-    const content = rest.typeOfMessage === 1 ? contentNormal : (rest.typeOfMessage === 2 ? contentInvitation : contentDeletion);
-    const messageToSendDto: MessageToSendDto = {...rest, content};
-
+    let messageToSendDto: MessageToSendDto = {...this.messageForm.getRawValue()};
     this.msgServ.sendMessage(messageToSendDto)
-    .subscribe((res: any) =>
+    .subscribe((res: boolean) =>
     {
+        console.log(res);
+        if(res)
+        {
+          this.alert.success('Message has been sent');
+          this.messageForm.reset();
+          this.messageForm.get('typeOfMessage')?.setValue('NORMAL_MESSAGE');
+        }
+        else
+        {
+          this.alert.error('Cant save message');
+        }
 
-    }, (err: any) =>
+    }, (err: HttpErrorResponse) =>
     {
-      console.log(err);
+      this.alert.error(err.error.message);
     })
   }
 
+  onChangeModel(e: any)
+  {
+    const content = this.messageForm.get('content');
+    const typeOfMessage = this.messageForm.get('typeOfMessage')?.value;
 
+    switch(e)
+    {
+      case 'NORMAL_MESSAGE':
+        content?.setValue('');
+        content?.enable();
+        this.contentMsg.nativeElement.setAttribute('rows', 10);
+      break;
+      case 'INVITATION':
+        content?.setValue('Hello buddy, I want to be your friend. Cheers!');
+        content?.disable();
+        this.contentMsg.nativeElement.setAttribute('rows', 3);
+      break;
+      case 'DELETION':
+        content?.setValue('I have to remove you. Sorry about that.');
+        content?.disable();
+        this.contentMsg.nativeElement.setAttribute('rows', 3);
+      break;
+      default:
+      break;
+    }
+  }
 }

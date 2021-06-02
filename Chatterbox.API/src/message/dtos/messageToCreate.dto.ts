@@ -2,7 +2,7 @@ import { TypeOfMessage } from "../message.entity";
 
 export class MessageToCreateDto{
 
-    senderId: string;
+    // senderId: string;
     receiverId: string;
     typeOfMessage: TypeOfMessage;
     title: string;

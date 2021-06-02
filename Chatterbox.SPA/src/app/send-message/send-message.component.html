@@ -8,7 +8,7 @@
       >
         <div class="card-header d-flex flex-row justify-content-between align-items-center ">
           <span>Type of message:</span> 
-          <select class="form-control form-control-sm w-50" formControlName="typeOfMessage">
+          <select class="form-control form-control-sm w-50" formControlName="typeOfMessage" (ngModelChange)="onChangeModel($event)">
             <option value="NORMAL_MESSAGE">Normal message</option>
             <option value="INVITATION">Invitation</option>
             <option value="DELETION">Deletion</option>
@@ -20,8 +20,8 @@
             <div class="form-group d-flex flex-row justify-content-between align-items-center">
               <label for="exampleInputEmail1">To:</label>
               <!-- <input type="email" class="form-control form-control-sm w-75" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Login or email"> -->
-              <select class="form-control form-control-sm w-50" formControlName="receiver">
-                <option *ngFor="let user of this.userList" value="{{user.login}}">{{user.login + '('+ user.name + ' ' + user.surname + ')'}}</option>
+              <select class="form-control form-control-sm w-50" formControlName="receiverId">
+                <option *ngFor="let user of this.userList" value="{{user._id}}">{{user.login + '('+ user.name + ' ' + user.surname + ')'}}</option>
               </select>
               <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
             </div>
@@ -32,13 +32,12 @@
             </div>
             <div class="form-group" >
               <label for="exampleFormControlTextarea1">Content</label>
-              <textarea *ngIf="this.messageForm.get('typeOfMessage')?.value === 'NORMAL_MESSAGE'" class="form-control" 
-              id="exampleFormControlTextarea1" rows="10"
-              formControlName="contentNormal"></textarea>
-              <textarea *ngIf="this.messageForm.get('typeOfMessage')?.value === 'INVITATION'" class="form-control"  readonly rows="3"
+              <textarea class="form-control" id="exampleFormControlTextarea1" rows="10" formControlName="content" #contentMsg>
+              </textarea>
+              <!-- <textarea *ngIf="this.messageForm.get('typeOfMessage')?.value === 'INVITATION'" class="form-control"  readonly rows="3"
               formControlName="contentInvitation"></textarea>
               <textarea *ngIf="this.messageForm.get('typeOfMessage')?.value === 'DELETION'" class="form-control"  rows="3"
-              formControlName="contentDeletion" readonly></textarea>
+              formControlName="contentDeletion" readonly></textarea> -->
             </div>
             <button type="submit" class="btn btn-primary float-right" [disabled]='this.messageForm.invalid'>Send</button>
         </div>

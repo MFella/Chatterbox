@@ -13,6 +13,7 @@ import { ProfileResolver } from './_resolvers/profile.resolver';
 import { InboxComponent } from './inbox/inbox.component';
 import { SendMessageComponent } from './send-message/send-message.component';
 import { UserListResolver } from './_resolvers/user-list.resolver';
+import { MessagesResolver } from './_resolvers/messages.resolver';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -22,7 +23,7 @@ const routes: Routes = [
   {path: 'profile', component: ProfileComponent, resolve: {profile: ProfileResolver}},
   {path: 'room-list', component: RoomListComponent, resolve: {rooms: ChannelListResolver}},
   {path: 'chat-with-user', component: ChatWithUserComponent, canActivate: [AuthGuard]},
-  {path: 'messages', component: InboxComponent, canActivate: [AuthGuard]},
+  {path: 'messages', component: InboxComponent, canActivate: [AuthGuard], resolve: {messages: MessagesResolver}},
   {path: 'send-message', component: SendMessageComponent, canActivate: [AuthGuard], resolve: {users: UserListResolver}}
 ];
 

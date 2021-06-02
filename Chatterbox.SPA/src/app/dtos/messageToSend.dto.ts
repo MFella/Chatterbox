@@ -1,7 +1,7 @@
 export interface MessageToSendDto
 {
+    receiverId: string;
     typeOfMessage: string;
-    receiver: string;
-    subject: string;
+    title: string;
     content: string;
 }
