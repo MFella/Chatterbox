@@ -1,4 +1,4 @@
-import { Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
 
 @Entity()
 export class Message
@@ -22,8 +22,7 @@ export class Message
     typeOfMessage: TypeOfMessage;
 
     @Column({
-        nullable: false,
-        default: new Date()
+        nullable: false
     })
     creationDate: Date;
 
@@ -36,6 +35,12 @@ export class Message
         nullable: false
     })
     content: string;
+
+    // @BeforeInsert()
+    // createDate() {
+    //     let now = new Date().toISOString().split('T');
+    //     this.creationDate = now[0] + ' ' + now[1].split('.')[0];
+    // }
 }
 
 export enum TypeOfMessage {

@@ -47,5 +47,5 @@ export class User
     @Column({
         nullable: false
     })
-    friends: ObjectID[]
+    friends: string[]
 }

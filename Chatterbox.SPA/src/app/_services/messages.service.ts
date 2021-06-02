@@ -5,7 +5,9 @@ import { map } from 'rxjs/operators';
 import {environment as env} from '../../environments/environment';
 import { MessageToReturnDto } from '../dtos/messageToReturn.dto';
 import { MessageToSendDto } from '../dtos/messageToSend.dto';
+import { PerformInvitationMessageDto } from '../dtos/performInvitationMessage.dto';
 import { UserListRecordDto } from '../dtos/userListRecord.dto';
+import { PerformInvitationAction } from '../inbox/inbox.component';
 
 @Injectable({
   providedIn: 'root'
@@ -28,5 +30,13 @@ export class MessagesService {
   getMessages(): Observable<MessageToReturnDto[]>
   {
     return this.http.get<MessageToReturnDto[]>(env.backUrl + 'message/all');
+  }
+
+  performInvitationAction(action: PerformInvitationAction, messageId: string): Observable<boolean>
+  {
+    const messageToPerform: PerformInvitationMessageDto = {action, messageId};
+
+
+    return this.http.put<boolean>(env.backUrl + 'message/perform-inv', messageToPerform);
   }
 }

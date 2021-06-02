@@ -3,7 +3,8 @@
     <div class="col-md-3 col-xs-12">
       <h3 class="d-flex justify-content-center">Messages</h3>
       <ul class="list-group">
-        <li class="list-group-item d-flex justify-content-between align-items-center">
+
+        <!-- <li class="list-group-item d-flex justify-content-between align-items-center">
           A list item
           <span class="badge bg-primary rounded-pill">14</span>
         </li>
@@ -14,34 +15,45 @@
         <li class="list-group-item d-flex justify-content-between align-items-center">
           A third list item
           <span class="badge bg-primary rounded-pill">1</span>
+        </li> -->
+        <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let msg of this.messages"
+        (click)="showMessage(msg._id)"
+        >
+         <div class="d-flex flex-column justify-content-center">
+          <h6> {{msg.login + ': ' + msg.title}}</h6>
+          <em class="text-muted">{{msg?.creationDate | toAgoTime}}</em>
+         </div>
+          <span class="badge bg-primary rounded-pill">14</span>
         </li>
       </ul>
     </div>
     <div class="col-md-9 col-xs-12 d-flex flex-column align-items-center">
       <h3 class="d-flex justify-content-center">Content</h3>
-      <div class="card w-75">
+      <div class="card w-75" *ngIf="this.currentMessage?.typeOfMessage === 'NORMAL_MESSAGE'">
         <div class="card-body">
-          <h5 class="card-title d-flex flex-row justify-content-between">Subject: What you want? <span>Author: $Some_User</span></h5>
+          <div class="card-title d-flex flex-row justify-content-between"> <h5>Subject: {{this.currentMessage?.title}}</h5> 
+            <div class="d-flex flex-column"> 
+             <h5>Author: <a target="_blank" [routerLink]="['../profile']" [queryParams]="{id: this.currentMessage?.senderId}">{{this.currentMessage?.login}}</a></h5> 
+             <p class="text-muted">Sent: {{this.currentMessage?.creationDate | toAgoTime}}</p>
+            </div>
+          </div>
           <p class="card-text">With supporting text below as a natural lead-in to additional content.
-            With supporting text below as a natural lead-in to additional content.
-            With supporting text below as a natural lead-in to additional content.
-            With supporting text below as a natural lead-in to additional content.
-            With supporting text below as a natural lead-in to additional content.
+           {{this.currentMessage?.content}}
           </p>
           <p class="card-text">Cheers mate. Bye!</p>
         </div>
       </div>
-      <div class="card text-white bg-primary mt-3 w-50 text-center">
-        <div class="card-header">Invitation from $Some_User</div>
+      <div class="card text-white bg-primary mt-3 w-50 text-center" *ngIf="this.currentMessage?.typeOfMessage === 'INVITATION'">
+        <div class="card-header">{{this.currentMessage?.login}} wants to be your friend!</div>
         <div class="card-body">
-          <h5 class="card-title">$Some_User wants to be your friend!</h5>
-          <div class="d-flex flex-row justify-content-around">
-            <button class="btn btn-info btn-sm">Accept <fa-icon [icon]="icons[0]"></fa-icon></button>
-            <button class="btn btn-danger btn-sm">Decline <fa-icon [icon]="icons[1]"></fa-icon></button>
+          <h5 class="card-title">{{this.currentMessage?.content}}</h5>
+          <div class="d-flex flex-row justify-content-around pt-2">
+            <button class="btn btn-info btn-sm" (click)="performInvitationAction('ACCEPT', currentMessage?._id)">Accept <fa-icon [icon]="icons[0]"></fa-icon></button>
+            <button class="btn btn-danger btn-sm" (click)="performInvitationAction('DECLINE', currentMessage?._id)">Decline <fa-icon [icon]="icons[1]"></fa-icon></button>
           </div>
         </div>
       </div>
-      <div class="card text-white bg-danger mt-3 w-50 text-center">
+      <div class="card text-white bg-danger mt-3 w-50 text-center" *ngIf="this.currentMessage?.typeOfMessage === 'DELETION'">
         <div class="card-header">You have been deleted!</div>
         <div class="card-body">
           <h5 class="card-title">$Some_User has deleted you from friends!</h5>

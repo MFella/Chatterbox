@@ -6,4 +6,12 @@ export interface Profile{
     name: string;
     surname: string;
     _id: string;
+    isFriends: IsFriend;
+}
+
+export enum IsFriend
+{
+    YES = 'YES',
+    NO = 'NO',
+    INV_PEND = 'INV_PEND'
 }

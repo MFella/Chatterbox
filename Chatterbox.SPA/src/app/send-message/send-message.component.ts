@@ -42,7 +42,7 @@ export class SendMessageComponent implements OnInit {
     this.messageForm = this.fb.group({
       typeOfMessage: ['NORMAL_MESSAGE', [Validators.required]],
       receiverId: [, [Validators.required]],
-      subject: ['', [Validators.required, Validators.nullValidator]],
+      title: ['', [Validators.required, Validators.nullValidator]],
       content: ['', [Validators.required]],
       // contentInvitation: ['Hello buddy, I want to be your friend. Cheers!', [Validators.required]],
       // contentDeletion: ['I have to remove you. Sorry about that.', [Validators.required]]
@@ -76,7 +76,7 @@ export class SendMessageComponent implements OnInit {
   onChangeModel(e: any)
   {
     const content = this.messageForm.get('content');
-    const typeOfMessage = this.messageForm.get('typeOfMessage')?.value;
+    const typeOfMessage: MessageToSendDto = this.messageForm.get('typeOfMessage')?.value;
 
     switch(e)
     {

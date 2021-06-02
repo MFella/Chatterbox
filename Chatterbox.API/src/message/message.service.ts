@@ -1,9 +1,10 @@
 import { BadGatewayException, BadRequestException, HttpException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/users/user.entity";
-import { createQueryBuilder, Repository } from "typeorm";
+import { createQueryBuilder, Not, Repository } from "typeorm";
 import { MessageToCreateDto } from "./dtos/messageToCreate.dto";
 import { MessageToReturnDto } from "./dtos/messageToReturn.dto";
+import { PerformInvitationMessageDto } from "./dtos/performInvitationMessage.dto";
 import { Message, TypeOfMessage } from "./message.entity";
 
 @Injectable()
@@ -23,9 +24,12 @@ export class MessageService{
             const senderFromRepo = await this.usersRepo.findOne(senderId);
             const receiverFromRepo = await this.usersRepo.findOne(messageToCreateDto.receiverId);
 
+            console.log(messageToCreateDto);
+
             if(messageToCreateDto.typeOfMessage === TypeOfMessage.INVITATION || messageToCreateDto.typeOfMessage === TypeOfMessage.DELETION)
             {
-                const hipoInvitationFromRepo = await this.messageRepo.findOne({receiverId: messageToCreateDto.receiverId, senderId});
+                const hipoInvitationFromRepo = await this.messageRepo
+                .findOne({receiverId: messageToCreateDto.receiverId, senderId, typeOfMessage: messageToCreateDto.typeOfMessage});
                 if(hipoInvitationFromRepo)
                 {
                     throw new BadRequestException(`${messageToCreateDto.typeOfMessage} has been sent ealier. Pay attention`);
@@ -37,7 +41,14 @@ export class MessageService{
                 throw new NotFoundException('Cant send message - invalid id of sender/receiver');
             }
 
-            await this.messageRepo.save({...messageToCreateDto, senderId});
+            if(messageToCreateDto.typeOfMessage === TypeOfMessage.INVITATION &&(senderFromRepo.friends.indexOf(messageToCreateDto.receiverId) !== -1 || 
+            receiverFromRepo.friends.indexOf(senderId) !== -1))
+            {
+                throw new BadRequestException('You are already friends!');
+            }
+
+
+            await this.messageRepo.save({...messageToCreateDto, senderId, creationDate: new Date()});
 
             return true;
 
@@ -59,7 +70,6 @@ export class MessageService{
         try{
             const messages = await this.messageRepo.find({receiverId: userId});
 
-            console.log(messages);
             const messagesWithAuthors = [];
 
             for(let item of messages)
@@ -74,13 +84,68 @@ export class MessageService{
         }catch(e)
         {
             throw new InternalServerErrorException("Error occured during retriving messages");
-        }
+        } 
     }
 
-    async getAllUsers(): Promise<User[]>
+    async performInvitation(userId: string, performInvitationMessageDto: PerformInvitationMessageDto): Promise<boolean | HttpException>
+    {
+
+        try{
+            const messageFromRepo = await this.messageRepo.findOne(performInvitationMessageDto.messageId);
+
+            if(!messageFromRepo)
+            {
+                throw new NotFoundException('Cannot find that message');
+            }
+
+            const senderFromRepo = await this.usersRepo.findOne(messageFromRepo.senderId);
+
+            if(!senderFromRepo)
+            {
+                throw new NotFoundException('Cannot find sender');
+            }
+
+            const userFromRepo = await this.usersRepo.findOne(userId);
+   
+
+            if(!userFromRepo)
+            {
+                throw new NotFoundException('Cannot find user');
+            }
+
+
+            switch(performInvitationMessageDto.action)
+            {
+                case 'ACCEPT':
+                    userFromRepo.friends.push(messageFromRepo.senderId);
+                    senderFromRepo.friends.push(userId);
+                    await this.usersRepo.update(userId, userFromRepo);
+                    await this.usersRepo.update(senderFromRepo._id, senderFromRepo);
+                    await this.messageRepo.delete(performInvitationMessageDto.messageId);
+                    return true;
+                case 'DECLINE':
+                    await this.messageRepo.delete(performInvitationMessageDto.messageId);
+                    return true;
+                default:
+                    return false;
+            }
+        }catch(e)
+        {
+            if(e?.status)
+            {
+                throw new HttpException(e?.message, e.status);
+            }else throw new InternalServerErrorException('Error occured during perfoming action - my bad');
+        }
+
+
+
+    }
+
+    async getAllUsers(userId: string): Promise<User[]>
     {
         try{
-            const users = await this.usersRepo.find({select: ['login', 'name', 'surname']});
+            const users = (await this.usersRepo.find({select: ['login', 'name', 'surname']})).filter(el => el._id.toString() !== userId);
+            console.log(users);
             return users;
         }catch(e)
         {

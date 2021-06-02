@@ -5,9 +5,14 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ToAgoTimePipe implements PipeTransform {
 
-  transform(value: Date): string {
+  transform(value: Date | undefined): string {
     
-    return value.toString().split('T')[1].split('Z')[0].split('.')[0];
+    if(!value)
+    {
+      return '';
+    }
+
+    return value.toString().split('T')[0]+ ', ' + value.toString().split('T')[1].split('Z')[0].split('.')[0];
   }
 
 }

@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { MessageToCreateDto } from "./dtos/messageToCreate.dto";
+import { PerformInvitationMessageDto } from "./dtos/performInvitationMessage.dto";
 import { MessageService } from "./message.service";
 
 
@@ -14,9 +15,10 @@ export class MessageController {
     {}
 
     @Get('all-users')
-    async getAllUsers()
+    @UseGuards(JwtAuthGuard)
+    async getAllUsers(@Req() req)
     {
-        return await this.messageServ.getAllUsers();
+        return await this.messageServ.getAllUsers(req.user._id.toString());
     }
 
     @Post('')
@@ -32,5 +34,12 @@ export class MessageController {
     async getMyMessages(@Req() req)
     {
         return await this.messageServ.getMessages(req.user._id.toString());
+    }
+
+    @Put('perform-inv')
+    @UseGuards(JwtAuthGuard)
+    async performInvitation(@Req() req, @Body() performInvitationMessageDto: PerformInvitationMessageDto)
+    {
+        return await this.messageServ.performInvitation(req.user._id.toString(), performInvitationMessageDto);
     }
 }

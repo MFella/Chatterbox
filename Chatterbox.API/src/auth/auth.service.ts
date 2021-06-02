@@ -12,6 +12,7 @@ import { Activity, RoleTypes } from './entities/activity.entity';
 import { TrackActivityDto } from './dtos/trackActivity.dto';
 import { JwtVerificationDto } from './dtos/jwtVerification.dto';
 import { GetProfileDto } from './dtos/getProfile.dto';
+import { Message, TypeOfMessage } from 'src/message/message.entity';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,9 @@ export class AuthService {
         private userRepository: Repository<User>,
         private readonly jwtServ: JwtService,
         @InjectRepository(Activity)
-        private activeRepo: Repository<Activity>
+        private activeRepo: Repository<Activity>,
+        @InjectRepository(Message)
+        private messageRepository: Repository<Message>
     )
     {}
 
@@ -80,7 +83,8 @@ export class AuthService {
             let passHash = hash.digest();
             const userForCreationDto = {...userDetails, 
                 password: passHash,
-                dateOfBirth: new Date(splittedDate[0], splittedDate[1]-1, splittedDate[2]+1)
+                dateOfBirth: new Date(splittedDate[0], splittedDate[1]-1, splittedDate[2]+1),
+                friends: []
             };
 
             let result = await this.userRepository.save(userForCreationDto);
@@ -337,12 +341,14 @@ export class AuthService {
         }
     }
 
-    async getProfileDeatails(getProfileDto: GetProfileDto)
+    async getProfileDeatails(getProfileDto: GetProfileDto, userId: string)
     {
         const userFromRepo = await this.userRepository.findOne(getProfileDto.id);
+        const meFromRepo = await this.userRepository.findOne(userId);
+        const fmessageFromRepo = await this.messageRepository.findOne({senderId: getProfileDto.id, receiverId: userId, typeOfMessage: TypeOfMessage.INVITATION});
+        const smessageFromRepo = await this.messageRepository.findOne({senderId: userId, receiverId: getProfileDto.id, typeOfMessage: TypeOfMessage.INVITATION});
 
-        console.log(getProfileDto);
-        console.log(userFromRepo);
+
         if(!userFromRepo)
         {
             throw new HttpException('User with that id is not exist', 404);
@@ -350,7 +356,26 @@ export class AuthService {
 
         const {password, ...rest} = userFromRepo;
 
-        return rest;
+        if(fmessageFromRepo || smessageFromRepo)
+        {
+            return {isFriends: IsFriend.INV_PEND, ...rest};
+
+        }else if(meFromRepo.friends.indexOf(userFromRepo._id.toString()) !== -1 || 
+        userFromRepo.friends.indexOf(userId) !== -1)
+        {
+            return {isFriends: IsFriend.YES, ...rest};
+        }else
+        {
+            return {isFriends: IsFriend.NO, ...rest};
+        }
+
     }
 
+}
+
+export enum IsFriend
+{
+    YES = 'YES',
+    NO = 'NO',
+    INV_PEND = 'INV_PEND'
 }

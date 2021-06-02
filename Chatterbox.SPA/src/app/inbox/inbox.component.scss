@@ -2,3 +2,11 @@
 {
     padding-top: 5.5rem;
 }
+
+li.list-group-item
+{
+    &:hover
+    {
+        cursor: pointer;
+    }
+}

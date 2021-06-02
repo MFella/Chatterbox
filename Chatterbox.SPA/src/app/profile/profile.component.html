@@ -5,6 +5,15 @@
         <div class="card-header">
           <div class="d-flex justify-content-center w-100">
             <h3 class="m-0">Profile</h3>
+            <button class="btn btn-primary btn-sm" id="add_friend_btn" *ngIf="this.profile?.isFriends === 'NO'" (click)="makeFriend()">
+            Make friend<fa-icon [icon]="icons[0]" class="ml-2"></fa-icon>
+            </button>
+            <button class="btn btn-primary btn-sm" id="add_friend_btn" *ngIf="this.profile?.isFriends === 'INV_PEND'" [disabled]='true'>
+              Invitation pended
+            </button>
+            <button class="btn btn-primary btn-sm" id="add_friend_btn" *ngIf="this.profile?.isFriends === 'YES'" [disabled]='true'>
+            Already friends<fa-icon [icon]="icons[2]" class="ml-2"></fa-icon>
+            </button>
           </div>
         </div>
         <div class="card-body">

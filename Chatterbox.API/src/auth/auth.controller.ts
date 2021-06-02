@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Headers, HttpCode, HttpStatus, Post, Put, Query, Req, Res} from '@nestjs/common';
+import {Body, Controller, Get, Headers, HttpCode, HttpStatus, Post, Put, Query, Req, Res, UseGuards} from '@nestjs/common';
 import { User } from 'src/users/user.entity';
 import { AuthService } from './auth.service';
 import { CheckEmailDto } from './dtos/checkEmail.dto';
@@ -10,6 +10,7 @@ import {RealIP} from 'nestjs-real-ip';
 import { TrackLogoutDto } from './dtos/trackLogout.dto';
 import { TrackActivityDto } from './dtos/trackActivity.dto';
 import { GetProfileDto } from './dtos/getProfile.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -100,8 +101,9 @@ export class AuthController {
     }
     
     @Get('profile')
-    async getProfileDetails(@Query() query: GetProfileDto)
+    @UseGuards(JwtAuthGuard)
+    async getProfileDetails(@Query() query: GetProfileDto, @Req() req)
     {
-       return await this.authServ.getProfileDeatails(query);
+       return await this.authServ.getProfileDeatails(query, req.user._id.toString());
     }
 }
