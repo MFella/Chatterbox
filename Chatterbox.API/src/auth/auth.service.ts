@@ -13,6 +13,7 @@ import { TrackActivityDto } from './dtos/trackActivity.dto';
 import { JwtVerificationDto } from './dtos/jwtVerification.dto';
 import { GetProfileDto } from './dtos/getProfile.dto';
 import { Message, TypeOfMessage } from 'src/message/message.entity';
+import { Contains } from 'class-validator';
 
 @Injectable()
 export class AuthService {
@@ -369,6 +370,11 @@ export class AuthService {
             return {isFriends: IsFriend.NO, ...rest};
         }
 
+    }
+
+    async getMyFriends(userId: string)
+    {
+        return await this.userRepository.find({select: ['name', 'surname', '_id', 'login'], where: {friends: Contains(userId)}});
     }
 
 }
