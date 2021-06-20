@@ -16,14 +16,13 @@
     <div class="col-md-3 col-xs-12">
       <h4 class="d-flex justify-content-between">
         <button class="btn btn-sm btn-primary" (click) = "changeListStyle()">Switch</button>
-        {{this.userListStyle}}
+        {{this.userListMode === 0 ? 'Friends' : 'All'}}
       </h4>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item">Jaskuł</li>
-        <li class="list-group-item">Dawidzior</li>
-        <li class="list-group-item">Szymon</li>
-        <li class="list-group-item">Mama</li>
-        <li class="list-group-item">Tata</li>
+        <li class="list-group-item" *ngFor="let friend of displayList">
+         <!-- <div *ngIf="friend.isFriend && this.userListMode === 0">{{friend.login}}</div>  -->
+          {{friend.login}}
+        </li>
       </ul>
     </div>
   </div>

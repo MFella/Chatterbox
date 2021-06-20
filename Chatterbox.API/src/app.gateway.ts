@@ -1,6 +1,7 @@
 import { Logger, UseGuards } from "@nestjs/common";
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Socket, Server } from 'socket.io';
+import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 import { RolesGuard } from "./auth/roles/roles.guard";
 import { MessageToRoomDto } from "./channel/dto/messageToRoom.dto";
 
@@ -25,7 +26,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     async joinToRoom(@ConnectedSocket()client: Socket, @MessageBody() room: string): Promise<void>
     {
         client.join(room);
-        console.log(room);
         this.server.emit('afterJoin', room);
     }
 
@@ -49,10 +49,17 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     }
 
     @SubscribeMessage('joinToUserRoom')
-    @UseGuards(RolesGuard)
+    @UseGuards(JwtAuthGuard)
     async joinToUserRoom(@ConnectedSocket() client: Socket, @MessageBody() roomId: string): Promise<void>
     {
         client.join(roomId);
+    }
+
+    @SubscribeMessage('leaveFromUserRoom')
+    @UseGuards(JwtAuthGuard)
+    async leaveFromUserRoom(@ConnectedSocket() client: Socket, @MessageBody() roomId: string): Promise<void>
+    {
+        client.leave(roomId);
     }
 
     @SubscribeMessage('msgToUserRoom')
@@ -93,13 +100,12 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     @SubscribeMessage('leaveRoom')
     handleLeaveRoom(@ConnectedSocket() client: Socket, @MessageBody() messageToRoomDto: MessageToRoomDto)
     {
-        console.log(this.storedAllUsers);
         this.server.to(messageToRoomDto.roomId).emit('leftRoom', messageToRoomDto);
         this.storedAllUsers = this.storedAllUsers.filter((el: any) => {
             return el.roomId !== messageToRoomDto.roomId && el.nickname !== messageToRoomDto.nickname
         });
-        console.log(this.storedAllUsers);
         client.leave(messageToRoomDto.roomId);
     }
+
 
 }

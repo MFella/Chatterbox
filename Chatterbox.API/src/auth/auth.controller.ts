@@ -111,6 +111,6 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     async getMyFriends(@Req() req)
     {
-        return await this.authServ.getMyFriends(req.user._id.toString());
+        return await this.authServ.getAllUsers(req.user._id.toString());
     }
 }

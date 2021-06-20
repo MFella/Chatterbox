@@ -5,7 +5,8 @@
         <div class="card-header">
           <div class="d-flex justify-content-center w-100">
             <h3 class="m-0">Profile</h3>
-            <button class="btn btn-primary btn-sm" id="add_friend_btn" *ngIf="this.profile?.isFriends === 'NO'" (click)="makeFriend()">
+            <button class="btn btn-primary btn-sm" id="add_friend_btn" *ngIf="this.profile?.isFriends === 'NO' 
+            && this.profile._id !== this.authServ.userStored?._id" (click)="makeFriend()">
             Make friend<fa-icon [icon]="icons[0]" class="ml-2"></fa-icon>
             </button>
             <button class="btn btn-primary btn-sm" id="add_friend_btn" *ngIf="this.profile?.isFriends === 'INV_PEND'" [disabled]='true'>

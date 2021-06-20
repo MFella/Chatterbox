@@ -14,6 +14,8 @@ import { JwtVerificationDto } from './dtos/jwtVerification.dto';
 import { GetProfileDto } from './dtos/getProfile.dto';
 import { Message, TypeOfMessage } from 'src/message/message.entity';
 import { Contains } from 'class-validator';
+import { RoomKey } from './entities/room-key.entity';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +27,9 @@ export class AuthService {
         @InjectRepository(Activity)
         private activeRepo: Repository<Activity>,
         @InjectRepository(Message)
-        private messageRepository: Repository<Message>
+        private messageRepository: Repository<Message>,
+        @InjectRepository(RoomKey)
+        private rkRepo: Repository<RoomKey>
     )
     {}
 
@@ -374,9 +378,49 @@ export class AuthService {
 
     async getMyFriends(userId: string)
     {
-        return await this.userRepository.find({select: ['name', 'surname', '_id', 'login'], where: {friends: Contains(userId)}});
+        const userFromRepo = await this.userRepository.findOne(userId);
+        const resultSet = [];
+
+        for(let i = 0; i < userFromRepo.friends.length; i++)
+        {
+            let friendOfMine = await this.userRepository
+            .findOne(userFromRepo.friends[i], {select: ['name', 'surname', '_id', 'login']});
+            let roomKey = await this.rkRepo.findOne({select: ['key'], where: {clientsIds: [userId, friendOfMine._id]}});
+            if(!roomKey)
+            {
+                const keyToCreate = {
+                    clientsIds: [userId, friendOfMine._id],
+                    key: uuid()
+                };
+                roomKey = await this.rkRepo.save(keyToCreate);
+            }
+            resultSet.push({key: roomKey, ...friendOfMine});
+        }
+        return resultSet;
     }
 
+    async getAllUsers(userId: string)
+    {
+        const usersFromRepo = await this.userRepository.find({select: ['name', 'surname', '_id', 'login', 'friends']});
+        const resultSet = [];
+        for(const user of usersFromRepo)
+        {
+            let roomKey = await this.rkRepo.findOne({select: ['key'], where: {clientsIds: [userId, user._id.toString()]}});
+            console.log(roomKey)
+            if(!roomKey)
+            {
+                const keyToCreate = {
+                    clientsIds: [userId, user._id.toString()],
+                    key: uuid()
+                };
+                roomKey = await this.rkRepo.save(keyToCreate);
+            }
+            // console.log(user.friends.indexOf(userId));
+            const {friends, ...rest} = user; 
+            resultSet.push({key: roomKey, isFriend: user.friends.indexOf(userId) !== -1? true: false, ...rest});
+        }
+        return resultSet;
+    }
 }
 
 export enum IsFriend

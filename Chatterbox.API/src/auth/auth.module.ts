@@ -10,10 +10,11 @@ import {jwtConstans} from './constans';
 import { JwtStrategy } from './jwt.strategy';
 import { Activity } from './entities/activity.entity';
 import { Message } from 'src/message/message.entity';
+import { RoomKey } from './entities/room-key.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Activity, Message]), 
+    TypeOrmModule.forFeature([User, Activity, Message, RoomKey]), 
     PassportModule,
     JwtModule.register({
       secret: jwtConstans.secret,

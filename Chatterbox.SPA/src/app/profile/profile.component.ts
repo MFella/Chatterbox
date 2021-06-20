@@ -16,7 +16,7 @@ export class ProfileComponent implements OnInit {
   public profile!: Profile;
   public icons: Array<IconDefinition> = [faPlusCircle];
 
-  constructor(private route: ActivatedRoute, private authServ: AuthService, private msgServ: MessagesService) { }
+  constructor(private route: ActivatedRoute, public authServ: AuthService, private msgServ: MessagesService) { }
 
   ngOnInit() {
     this.route.data.subscribe((res: any) =>

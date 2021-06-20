@@ -12,7 +12,7 @@ export class ToAgoTimePipe implements PipeTransform {
       return '';
     }
 
-    return value.toString().split('T')[0]+ ', ' + value.toString().split('T')[1].split('Z')[0].split('.')[0];
+    return /*value.toString().split('T')[0]+ ', ' + */ value.toString().split('T')[1].split('Z')[0].split('.')[0];
   }
 
 }

@@ -9,6 +9,7 @@ import { RoleTypes, UserStored } from '../_models/userStored.interface';
 import * as moment from 'moment';
 import { AlertService } from './alert.service';
 import { ChangeNickDto } from '../dtos/changeNick.dto';
+import { FriendsToChatDto } from '../dtos/friendsToChat.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -164,7 +165,6 @@ export class AuthService {
   {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
-    console.log('xd')
     return this.http.get(env.backUrl + `auth/profile?id=${id}`, {headers});
   }
 
@@ -173,4 +173,11 @@ export class AuthService {
     return this.http.get<boolean>(env.backUrl + 'auth/is-token-expired');
   }
 
+
+  getFriends(): Observable<FriendsToChatDto[]>
+  {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
+    return this.http.get<FriendsToChatDto[]>(env.backUrl + `auth/friends`, {headers});
+  }
 }
