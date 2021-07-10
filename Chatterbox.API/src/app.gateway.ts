@@ -48,6 +48,16 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         }
     }
 
+    @SubscribeMessage('disconnectWithAll')
+    @UseGuards(JwtAuthGuard)
+    async disconnectWithAll(@ConnectedSocket() client: Socket, @MessageBody() roomId: string): Promise<void>
+    {
+        for(const room in client.rooms)
+        {
+            client.leave(room);
+        }
+    }
+
     @SubscribeMessage('joinToUserRoom')
     @UseGuards(JwtAuthGuard)
     async joinToUserRoom(@ConnectedSocket() client: Socket, @MessageBody() roomId: string): Promise<void>
@@ -94,7 +104,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         console.log(messageToRoomDto);
         this.storedAllUsers.push({roomId: messageToRoomDto.roomId, nickname: messageToRoomDto.nickname});
         this.server.to(messageToRoomDto.roomId).emit('jointRoom', messageToRoomDto);
-        this.logger.log("NICE");
     }
 
     @SubscribeMessage('leaveRoom')

@@ -13,7 +13,6 @@ import { ChatService } from '../_services/chat.service';
 })
 export class RoomListComponent implements OnInit {
 
-  //roomNames: Array<string> = ["CH1", "CH2", "CH3", "CH4", "CH5"];
   rooms!: RoomDto[];
 
   constructor(public chatServ: ChatService, private route: ActivatedRoute,

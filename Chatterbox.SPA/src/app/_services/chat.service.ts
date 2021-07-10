@@ -96,4 +96,8 @@ export class ChatService{
     return this.http.get<RoomDto[]>(environment.backUrl + 'channel/list', {headers});
   }
 
+  public disconnectWithAll(userId: string): void {
+    this.socket.emit('disconnectWithAll', userId);
+  }
+
 }

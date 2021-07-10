@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { faPlusCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faEnvelope, faPlusCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { MessageToSendDto, TypeOfMessage } from '../dtos/messageToSend.dto';
 import { IsFriend, Profile } from '../_models/profile.interface';
 import { AuthService } from '../_services/auth.service';
@@ -14,7 +14,7 @@ import { MessagesService } from '../_services/messages.service';
 export class ProfileComponent implements OnInit {
 
   public profile!: Profile;
-  public icons: Array<IconDefinition> = [faPlusCircle];
+  public icons: Array<IconDefinition> = [faPlusCircle, faEnvelope, faCheckCircle];
 
   constructor(private route: ActivatedRoute, public authServ: AuthService, private msgServ: MessagesService) { }
 

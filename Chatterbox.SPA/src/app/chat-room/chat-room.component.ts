@@ -42,13 +42,7 @@ export class ChatRoomComponent implements OnInit {
       {
         this.leftRoom();
       }
-      //this.currentRoom = null;
       this.chatServ.sendMessage("Are you serious?");
-      // this.chatServ.getMessages()
-      // .subscribe((message: MessageToRoomDto) =>
-      // {
-      //   console.log(message); 
-      // })
     });
 
     this.chatServ.getMessageFromRoom(this.currentRoom ?? '')
@@ -200,14 +194,7 @@ export class ChatRoomComponent implements OnInit {
 
       }
 
-      
-
-      // this.chatServ.getConfirmationOfLeft()
-      // .subscribe((room: string) =>
-      // {
-      //   console.log(`Left room: ${room}`);
-      //   this.currentRoom = '';
-      // })
+    
     }
   }
 

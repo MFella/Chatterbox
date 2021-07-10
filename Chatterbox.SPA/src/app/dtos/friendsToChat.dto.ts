@@ -1,3 +1,5 @@
+import { KeyToUserChatDto } from "./keyToUserChatDto";
+
 export interface FriendsToChatDto
 {
     name: string;
@@ -5,4 +7,5 @@ export interface FriendsToChatDto
     _id: string;
     login: string;
     isFriend: boolean;
+    key: KeyToUserChatDto
 }
