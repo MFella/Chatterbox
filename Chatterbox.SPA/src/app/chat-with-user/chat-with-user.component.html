@@ -3,13 +3,26 @@
     <div class="col-md-9 col-xs-12">
       <div class="card text-center">
         <div class="card-body">
-          <h5 class="card-title">Special title treatment</h5>
-          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
+          <div class="empty-conv" *ngIf="this.messages.length === 0">
+            <h5 class="card-title">That conversation is empty</h5>
+            <p class="card-text">Write something funny eg. "I said hey, what's going on?"</p>
+          </div>
+
+          <p class="card-text invitation_text font-italic">Just try to be polite ;)</p>
+          <div class="card-text perform_content" *ngFor="let message of messages" 
+          triggers="mouseenter:mouseleave" placement="top">
+            
+            <div class="perform_content_header">
+              <span *ngIf="message.action === 'MESSAGE'" class="badge badge-pill badge-info">{{message.nickname}}</span>
+              <span class="badge badge-pill badge-warning">{{message.performAt | toAgoTime}}</span>
+            </div>
+            <strong *ngIf="message.action === 'MESSAGE'" class="message_content">{{message.message}}</strong>
+          </div>
         </div>
         <div class="card-footer d-flex justify-content-between">
-          <input class="form-control msg_input" type="text">
-          <button class="btn btn-primary">Send</button>
+          <input class="form-control msg_input" type="text" [(ngModel)]="messageFromInput" #msgInput
+          (keydown.enter)="sendMessage()">
+          <button class="btn btn-primary" (click)="sendMessage()" [disabled]='this.messageFromInput.length === 0'>Send</button>
         </div>
       </div>
     </div>

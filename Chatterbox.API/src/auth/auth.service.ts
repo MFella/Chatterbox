@@ -309,6 +309,18 @@ export class AuthService {
 
     }
 
+    async retrieveUserFromToken(token: string | undefined): Promise<Object> { 
+        try {
+            if(!token) {
+                return false;
+            }
+
+            return this.jwtServ.verify(token.replace('Bearer ', ''));
+        }catch(e) {
+            return false;
+        }
+    }
+
     async isTokenExpired(token: string | undefined)
     {
 
@@ -346,7 +358,7 @@ export class AuthService {
         }
     }
 
-    async getProfileDeatails(getProfileDto: GetProfileDto, userId: string)
+    async getProfileDetails(getProfileDto: GetProfileDto, userId: string)
     {
         const userFromRepo = await this.userRepository.findOne(getProfileDto.id);
         const meFromRepo = await this.userRepository.findOne(userId);

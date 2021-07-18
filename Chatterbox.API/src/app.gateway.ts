@@ -3,10 +3,15 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect,
 import { Socket, Server } from 'socket.io';
 import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 import { RolesGuard } from "./auth/roles/roles.guard";
+import { SocketAuthGuard } from "./auth/socket.guard";
 import { MessageToRoomDto } from "./channel/dto/messageToRoom.dto";
+import { MessageService } from "./message/message.service";
 
 @WebSocketGateway(3101)
 export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
+
+
+    constructor(private msgServ: MessageService) {}
 
     @WebSocketServer() server: any;
     
@@ -49,7 +54,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     }
 
     @SubscribeMessage('disconnectWithAll')
-    @UseGuards(JwtAuthGuard)
     async disconnectWithAll(@ConnectedSocket() client: Socket, @MessageBody() roomId: string): Promise<void>
     {
         for(const room in client.rooms)
@@ -59,23 +63,28 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     }
 
     @SubscribeMessage('joinToUserRoom')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(SocketAuthGuard)
     async joinToUserRoom(@ConnectedSocket() client: Socket, @MessageBody() roomId: string): Promise<void>
     {
+        // console.log(client.handshake);
         client.join(roomId);
+        this.msgServ.createMessage
+        this.server.emit('jointRoom', roomId);
     }
 
     @SubscribeMessage('leaveFromUserRoom')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(SocketAuthGuard)
     async leaveFromUserRoom(@ConnectedSocket() client: Socket, @MessageBody() roomId: string): Promise<void>
     {
         client.leave(roomId);
     }
 
     @SubscribeMessage('msgToUserRoom')
-    @UseGuards(RolesGuard)
+    @UseGuards(SocketAuthGuard)
     async messageToUserRoom(@ConnectedSocket() client: Socket, @MessageBody() messageToUserRoomDto: MessageToRoomDto): Promise<void>
     {
+        console.log(messageToUserRoomDto);
+        // save message in messageRepo ;d
         this.server.to(messageToUserRoomDto.roomId).emit('getMessage', messageToUserRoomDto);
     }
 
@@ -101,7 +110,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     {
         client.join(messageToRoomDto.roomId);
 
-        console.log(messageToRoomDto);
         this.storedAllUsers.push({roomId: messageToRoomDto.roomId, nickname: messageToRoomDto.nickname});
         this.server.to(messageToRoomDto.roomId).emit('jointRoom', messageToRoomDto);
     }

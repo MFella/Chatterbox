@@ -2,6 +2,7 @@ import { BadGatewayException, BadRequestException, HttpException, Injectable, In
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/users/user.entity";
 import { createQueryBuilder, Not, Repository } from "typeorm";
+import { ChatMessageToCreateDto } from "./dtos/chatMessageToCreate.dto";
 import { MessageToCreateDto } from "./dtos/messageToCreate.dto";
 import { MessageToReturnDto } from "./dtos/messageToReturn.dto";
 import { PerformInvitationMessageDto } from "./dtos/performInvitationMessage.dto";
@@ -63,6 +64,20 @@ export class MessageService{
             throw new InternalServerErrorException("Error occured during saving message");
         }
 
+    }
+
+    async createMessageForPrivateChat(messageToCreateDto: ChatMessageToCreateDto): Promise<void>{
+
+        try {
+            const senderFromRepo = await this.usersRepo.findOne(messageToCreateDto.senderId);
+            const receiverFromRepo = await this.usersRepo.findOne(messageToCreateDto.receiverId);
+
+
+            
+
+        }catch(e) {
+
+        }
     }
 
     async getMessages(userId: string): Promise<MessageToReturnDto[]>

@@ -104,7 +104,7 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     async getProfileDetails(@Query() query: GetProfileDto, @Req() req)
     {
-       return await this.authServ.getProfileDeatails(query, req.user._id.toString());
+       return await this.authServ.getProfileDetails(query, req.user._id.toString());
     }
 
     @Get('friends')

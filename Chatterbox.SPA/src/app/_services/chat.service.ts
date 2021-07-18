@@ -13,6 +13,7 @@ import { MessageToRoomDto } from '../dtos/messageToRoom.dto';
 export class ChatService{
 
   private socket!: any;
+  retrieveMsgEve: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor(private http: HttpClient) {
     this.socket = io(environment.socketBackUrl )
@@ -37,16 +38,23 @@ export class ChatService{
     })
   }
 
+  public overrideSocketWithAuth(authToken: string) {
+    this.socket = io(environment.socketBackUrl, { 'query': {'authorization': `Bearer ${authToken}`}});
+  }
+
   public sendMessageToRoom(msg: MessageToRoomDto) 
   {
-    console.log(this.socket);
     this.socket.emit("messageToRoom", msg);
-
   }
 
   public joinRoom(messageToRoomDto: MessageToRoomDto)
   {
     this.socket.emit('joinRoom', messageToRoomDto);
+  }
+
+  public joinPrivateRoom(messageToRoomDto: MessageToRoomDto)
+  {
+    this.socket.emit('joinToUserRoom', messageToRoomDto);
   }
 
   public leftRoom(messageToRoomDto: MessageToRoomDto)
@@ -98,6 +106,10 @@ export class ChatService{
 
   public disconnectWithAll(userId: string): void {
     this.socket.emit('disconnectWithAll', userId);
+  }
+
+  sendMessageToUserRoom(messageToRoomDto: MessageToRoomDto) {
+    this.socket.emit("msgToUserRoom", messageToRoomDto);
   }
 
 }

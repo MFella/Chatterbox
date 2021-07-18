@@ -61,3 +61,67 @@ ul.list-group
         background: transparent;  /* Optional: just make scrollbar invisible */
     }
 }
+
+.card-body
+{
+    overflow-y: scroll;
+    padding-bottom: 1.5rem;
+
+    &::-webkit-scrollbar
+    {
+        display: none;
+    }
+
+    .card-text.perform_content
+    {
+        padding: .75rem;
+        background-color: rgba(101, 153, 201,.4);
+        border-radius: 1rem;
+        margin-top: 1rem;
+
+        .perform_content_header
+        {
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+            transform: translateY(-1.2rem);
+        }
+
+
+        span.badge-info
+        {
+            width: 20%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-height: 1.3rem;
+        }
+
+        span.badge-warning
+        {
+            width: 10%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-height: 1.3rem;
+        }
+
+        strong.message_content
+        {
+            //margin: 4rem;
+            display: block;
+            transform: translateY(-.5rem) !important;
+            text-align: start;
+        }
+        .action_leave, .action_join
+        {
+           transform: translateY(-.5rem);
+        }
+    }
+
+    .card-text.invitation_text
+    {
+        display: flex; 
+        justify-content: center;
+    }
+}

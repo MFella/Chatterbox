@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FriendsToChatDto } from '../dtos/friendsToChat.dto';
 import { UserListMode } from '../_models/userListMode.enum';
@@ -17,8 +17,12 @@ export class ChatWithUserComponent implements OnInit {
   userListMode: UserListMode = 0;
   userList!: FriendsToChatDto[];
   displayList!: FriendsToChatDto[];
-  messages: Array<string> = [];
+  messages: Array<any> = [];
   currentConnectedUserRoom: string = '';
+  messageFromInput: string = '';
+
+  @ViewChild('msgInput')
+  msgInput!: ElementRef;
 
   public icons: Array<IconDefinition> = [faLongArrowAltRight];
 
@@ -44,7 +48,12 @@ export class ChatWithUserComponent implements OnInit {
     });
 
     this.observeForJoin();
-    this.observeMessages();
+    this.chatServ.retrieveMsgEve.subscribe((res: any) => {
+      if(res) {
+        console.log('observing ', res);
+        this.observeMessages();
+      }
+    })
   }
 
   changeListStyle()
@@ -63,6 +72,8 @@ export class ChatWithUserComponent implements OnInit {
 
   connectWithUser(userId: string, keyId: string): void {
     this.disconnectWithAll(userId);
+    
+    this.chatServ.overrideSocketWithAuth(localStorage.getItem('id_token') ?? '');
 
     let toSend: MessageToRoomDto = Object.assign({}, {
       roomId: keyId,
@@ -72,7 +83,8 @@ export class ChatWithUserComponent implements OnInit {
       performAt: new Date()
     });
 
-    this.chatServ.joinRoom(toSend);
+    this.currentConnectedUserRoom = keyId;
+    this.chatServ.joinPrivateRoom(toSend);
   }
 
   disconnectWithAll(userId: string): void {
@@ -83,7 +95,7 @@ export class ChatWithUserComponent implements OnInit {
     this.chatServ.getConfirmationOfJoin()
     .subscribe((key: string) =>
     {
-      console.log('Joined');
+      this.chatServ.retrieveMsgEve.next(key);
       this.currentConnectedUserRoom = key;
     });
   }
@@ -92,6 +104,26 @@ export class ChatWithUserComponent implements OnInit {
     this.chatServ.getMessageFromRoom(this.currentConnectedUserRoom)
     .subscribe((res: any) => {
       console.log(res);
+      this.messages.push(res);
     })
+  }
+
+  sendMessage() {
+
+    if(!this.messageFromInput) {
+      return;
+    }
+
+    const msg: MessageToRoomDto = {
+      roomId: this.currentConnectedUserRoom,
+      nickname: this.authServ.userStored?.login,
+      message: this.messageFromInput,
+      action: TYPE_OF_ACTION.MESSAGE,
+      performAt: new Date()
+    };
+    this.chatServ.sendMessageToUserRoom(msg);
+    this.msgInput.nativeElement.value = '';
+    this.msgInput.nativeElement.focus();
+    this.messageFromInput = '';
   }
 }
