@@ -5,6 +5,7 @@ import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 import { RolesGuard } from "./auth/roles/roles.guard";
 import { SocketAuthGuard } from "./auth/socket.guard";
 import { MessageToRoomDto } from "./channel/dto/messageToRoom.dto";
+import { ChatMessageToCreateDto } from "./message/dtos/chatMessageToCreate.dto";
 import { MessageService } from "./message/message.service";
 
 @WebSocketGateway(3101)
@@ -83,8 +84,15 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     @UseGuards(SocketAuthGuard)
     async messageToUserRoom(@ConnectedSocket() client: Socket, @MessageBody() messageToUserRoomDto: MessageToRoomDto): Promise<void>
     {
-        console.log(messageToUserRoomDto);
+        // TODO: trzeba dorobić nowy typ przesyłanego Dto(nie MessageToRoomDto, a coś bardziej klarownego)
         // save message in messageRepo ;d
+        // save message in repo
+        const messageForPrivateChat: ChatMessageToCreateDto = Object.assign({}, {
+            senderId: messageToUserRoomDto.nickname,
+            roomId: messageToUserRoomDto.roomId.roomId,
+            content: messageToUserRoomDto.message
+        });
+        await this.msgServ.createMessageForPrivateChat(messageForPrivateChat);
         this.server.to(messageToUserRoomDto.roomId).emit('getMessage', messageToUserRoomDto);
     }
 

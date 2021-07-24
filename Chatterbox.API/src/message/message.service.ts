@@ -1,7 +1,9 @@
 import { BadGatewayException, BadRequestException, HttpException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { RoomKey } from "src/auth/entities/room-key.entity";
 import { User } from "src/users/user.entity";
 import { createQueryBuilder, Not, Repository } from "typeorm";
+import { ChatMessage } from "./chat-message.entity";
 import { ChatMessageToCreateDto } from "./dtos/chatMessageToCreate.dto";
 import { MessageToCreateDto } from "./dtos/messageToCreate.dto";
 import { MessageToReturnDto } from "./dtos/messageToReturn.dto";
@@ -14,8 +16,12 @@ export class MessageService{
     constructor(
         @InjectRepository(Message)
         private messageRepo: Repository<Message>,
+        @InjectRepository(ChatMessage)
+        private chatMessageRepo: Repository<ChatMessage>,
         @InjectRepository(User)
-        private usersRepo: Repository<User>
+        private usersRepo: Repository<User>,
+        @InjectRepository(RoomKey)
+        private roomKeyRepo: Repository<RoomKey>
     )
     {}
 
@@ -55,7 +61,6 @@ export class MessageService{
 
         }catch(e)
         {
-            console.log(e);
             if(e?.status)
             {
                 throw new HttpException(e?.message, e.status);
@@ -69,14 +74,29 @@ export class MessageService{
     async createMessageForPrivateChat(messageToCreateDto: ChatMessageToCreateDto): Promise<void>{
 
         try {
-            const senderFromRepo = await this.usersRepo.findOne(messageToCreateDto.senderId);
-            const receiverFromRepo = await this.usersRepo.findOne(messageToCreateDto.receiverId);
+            const senderFromRepo = await this.usersRepo.findOne({login: messageToCreateDto.senderId});
+            const roomKeyFromRepo = await this.roomKeyRepo.findOne(messageToCreateDto.roomId);
+
+            const senderId = senderFromRepo._id.toString();
+            const receiverId = roomKeyFromRepo.clientsIds.filter(x => x.toString() !== senderFromRepo._id.toString());
+            const receiverFromRepo = await this.usersRepo.findOne(receiverId[0]);
+
+            if (!senderFromRepo || !receiverFromRepo) return;
 
 
-            
+            const chatMessageToSave = {
+                senderLogin: senderFromRepo.login,
+                receiverLogin: receiverFromRepo.login,
+                performAt: new Date(),
+                ...messageToCreateDto
+            };
+
+            console.log('dasdasdsa', chatMessageToSave);
+
+            await this.chatMessageRepo.save(chatMessageToSave);
 
         }catch(e) {
-
+            console.log(e);
         }
     }
 

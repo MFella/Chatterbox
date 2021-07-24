@@ -1,5 +1,5 @@
 export class ChatMessageToCreateDto {
     senderId: string;
-    receiverId: string;
+    roomId: string;
     content: string;
 }

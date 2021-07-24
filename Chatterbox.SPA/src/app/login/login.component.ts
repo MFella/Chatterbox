@@ -36,6 +36,11 @@ export class LoginComponent implements OnInit {
 
   login()
   {
+    if(this.loginForm.invalid) {
+      this.alert.error('Fill in the from correctly');
+      return;
+
+    }
     const userCreds = Object.assign({}, this.loginForm.value);
     this.authServ.login(userCreds)
     .subscribe((res: any) =>

@@ -27,13 +27,13 @@
             <div class="input-group-append">
               <span class="input-group-text"><fa-icon [icon]="icons[0]"></fa-icon></span>
             </div>
-            <input type="text" name="" class="form-control input_user" value="" placeholder="Username" formControlName="login">
+            <input type="text" name="" class="form-control input_user" value="" placeholder="Username" formControlName="login" (keydown.enter)="login()">
           </div>
           <div class="input-group mb-2">
             <div class="input-group-append">
               <span class="input-group-text"><fa-icon [icon]="icons[1]"></fa-icon></span>
             </div>
-            <input type="password" name="" class="form-control input_pass" value="" placeholder="Password" formControlName="password">
+            <input type="password" name="" class="form-control input_pass" value="" placeholder="Password" formControlName="password" (keydown.enter)="login()">
           </div>
           <div class="form-group">
             <div class="custom-control custom-checkbox">

@@ -20,7 +20,6 @@ export class SocketAuthGuard implements CanActivate{
             const smth = context.switchToWs().getClient<Socket>();
             const authToken = smth.handshake?.query?.authorization.toString().split(' ')[1];
             const verification: any = await this.authServ.retrieveUserFromToken(authToken);
-            console.log(verification);
 
             if(!verification) {
                 return false;
