@@ -18,6 +18,7 @@ export class ChatWithUserComponent implements OnInit {
   userList!: FriendsToChatDto[];
   displayList!: FriendsToChatDto[];
   messages: Array<any> = [];
+  selectedUserId: any;
   currentConnectedUserRoom: string = '';
   messageFromInput: string = '';
 
@@ -40,7 +41,7 @@ export class ChatWithUserComponent implements OnInit {
     this.route.data.subscribe((res: any) => 
     {
       console.log(res);
-      this.userList = res.users;
+      this.userList = res.users.filter((a: FriendsToChatDto) => a._id !== this.authServ.userStored?._id);
       if(this.userListMode === 0)
       {
         this.displayList = this.userList.filter((a: FriendsToChatDto) => { return a.isFriend});
@@ -62,15 +63,17 @@ export class ChatWithUserComponent implements OnInit {
     if(this.userListMode === 0)
     {
       this.userListMode = 1;
-      this.displayList = this.userList;
+      this.displayList = this.userList.filter((a: FriendsToChatDto) => a._id !== this.authServ.userStored?._id);
     } else{
       this.userListMode = 0;
       this.displayList = this.userList.filter((a: FriendsToChatDto) => { return a.isFriend});
     }
+    this.selectedUserId = null;
     localStorage.setItem('user-list-mode', this.userListMode.toString());
   }
 
   connectWithUser(userId: string, keyId: string): void {
+    this.selectedUserId = userId;
     this.disconnectWithAll(userId);
     
     this.chatServ.overrideSocketWithAuth(localStorage.getItem('id_token') ?? '');

@@ -21,18 +21,20 @@
         </div>
         <div class="card-footer d-flex justify-content-between">
           <input class="form-control msg_input" type="text" [(ngModel)]="messageFromInput" #msgInput
-          (keydown.enter)="sendMessage()">
-          <button class="btn btn-primary" (click)="sendMessage()" [disabled]='this.messageFromInput.length === 0'>Send</button>
+          (keydown.enter)="sendMessage()" [readonly]="!this.selectedUserId" [placeholder]="this.selectedUserId ? 'What do you think?' : 
+          'You are not able to write anything - pick user from list!'">
+          <button class="btn btn-primary" (click)="sendMessage()" [disabled]='this.messageFromInput.length === 0 || !this.selectedUserId'>Send</button>
         </div>
       </div>
     </div>
     <div class="col-md-3 col-xs-12">
       <h4 class="d-flex justify-content-between">
-        <button class="btn btn-sm btn-primary" (click) = "changeListStyle()">Switch</button>
+        <button class="btn btn-sm btn-primary" (click)="changeListStyle()">Switch</button>
         {{this.userListMode === 0 ? 'Friends' : 'All'}}
       </h4>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item" *ngFor="let friend of displayList" (click)="connectWithUser(friend._id, friend.key._id)">
+        <li class="list-group-item" *ngFor="let friend of displayList" (click)="connectWithUser(friend._id, friend.key._id)"
+        [ngClass]="{'active_user': this.selectedUserId && this.selectedUserId === friend._id}">
          <div class="d-flex flex-row justify-content-between align-items-center">
           <span>{{friend.login}}</span>
           <button class="btn btn-secondary btn-sm btn-to-profile d-flex flex-row justify-content-between"
