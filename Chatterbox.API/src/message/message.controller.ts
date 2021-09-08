@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Put, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { MessageToCreateDto } from "./dtos/messageToCreate.dto";
 import { PerformInvitationMessageDto } from "./dtos/performInvitationMessage.dto";
+import { RoomIdDto } from "./dtos/roomId.dto";
 import { MessageService } from "./message.service";
 
 
@@ -41,5 +42,11 @@ export class MessageController {
     async performInvitation(@Req() req, @Body() performInvitationMessageDto: PerformInvitationMessageDto)
     {
         return await this.messageServ.performInvitation(req.user._id.toString(), performInvitationMessageDto);
+    }
+
+    @Get('chat-all')
+    @UseGuards(JwtAuthGuard)
+    async getMyChatMessages(@Req() req, @Query() roomIdDto: RoomIdDto) {
+        return await this.messageServ.getChatMessages(req.user._id.toString(), roomIdDto.roomId);
     }
 }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FriendsToChatDto } from '../dtos/friendsToChat.dto';
 import { UserListMode } from '../_models/userListMode.enum';
@@ -6,6 +6,7 @@ import { ChatService } from '../_services/chat.service';
 import {faLongArrowAltRight, IconDefinition} from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../_services/auth.service';
 import { MessageToRoomDto, TYPE_OF_ACTION } from '../dtos/messageToRoom.dto';
+import { MessagesService } from '../_services/messages.service';
 
 @Component({
   selector: 'app-chat-with-user',
@@ -13,6 +14,8 @@ import { MessageToRoomDto, TYPE_OF_ACTION } from '../dtos/messageToRoom.dto';
   styleUrls: ['./chat-with-user.component.scss']
 })
 export class ChatWithUserComponent implements OnInit {
+
+  @ViewChild('msgContainer') private msgContainer!: ElementRef;
 
   userListMode: UserListMode = 0;
   userList!: FriendsToChatDto[];
@@ -28,7 +31,8 @@ export class ChatWithUserComponent implements OnInit {
   public icons: Array<IconDefinition> = [faLongArrowAltRight];
 
   constructor(private route: ActivatedRoute, private chatServ: ChatService,
-    private authServ: AuthService) { }
+    private authServ: AuthService, private changeDetectorRef: ChangeDetectorRef,
+    private msgServ: MessagesService) { }
 
   ngOnInit() {
     const modeFromStorage = localStorage.getItem('user-list-mode');
@@ -53,6 +57,7 @@ export class ChatWithUserComponent implements OnInit {
       if(res) {
         console.log('observing ', res);
         this.observeMessages();
+        this.loadMessages(res.roomId);
       }
     })
   }
@@ -106,9 +111,18 @@ export class ChatWithUserComponent implements OnInit {
   observeMessages() {
     this.chatServ.getMessageFromRoom(this.currentConnectedUserRoom)
     .subscribe((res: any) => {
-      console.log(res);
       this.messages.push(res);
+      this.changeDetectorRef.detectChanges();
+      this.scrollToBottom();
     })
+  }
+  
+  loadMessages(roomId: string) {
+    this.msgServ.getPrivateRoomMessages(roomId)
+      .subscribe((res: any[]) => {
+        console.log(res);
+        this.messages.push(...res)
+      })
   }
 
   sendMessage() {
@@ -124,9 +138,30 @@ export class ChatWithUserComponent implements OnInit {
       action: TYPE_OF_ACTION.MESSAGE,
       performAt: new Date()
     };
+
     this.chatServ.sendMessageToUserRoom(msg);
     this.msgInput.nativeElement.value = '';
     this.msgInput.nativeElement.focus();
     this.messageFromInput = '';
+
+  }
+
+  scrollToBottom(): void
+  {
+    try{
+      const listOfMsgs = document.querySelectorAll('.perform_content');
+
+      this.msgContainer.nativeElement.scrollTop = this.msgContainer.nativeElement.scrollHeight + listOfMsgs[listOfMsgs.length-1].scrollHeight;
+    }catch(err: unknown)
+    {
+      console.log(err);
+    }
+  }
+
+  fetchMessages(roomId: string): void {
+    this.chatServ.fetchMessages(roomId)
+      .subscribe((res: any) => {
+        console.log(res);
+      })
   }
 }

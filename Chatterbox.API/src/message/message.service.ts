@@ -187,4 +187,20 @@ export class MessageService{
             throw new InternalServerErrorException('Error occured during fetching users');
         }
     }
+
+    async getChatMessages(userId: string, roomId: string): Promise<any> 
+    {
+        try {
+            const messages = await this.chatMessageRepo.find({where: {roomId}});
+            messages.sort((a, b) => {
+                if(new Date(a.performAt) >= new Date(b.performAt)){
+                    return 1;
+                } else return -1;
+            })
+            return messages;
+
+        }catch(e) {
+            throw new InternalServerErrorException('Error occured during fetching messages');
+        }
+    }
 }

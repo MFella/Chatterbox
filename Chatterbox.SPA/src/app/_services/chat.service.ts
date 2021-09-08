@@ -112,4 +112,8 @@ export class ChatService{
     this.socket.emit("msgToUserRoom", messageToRoomDto);
   }
 
+  fetchMessages(roomId: string): Observable<any> {
+
+    return this.http.get(environment.backUrl + `messages/chat-all?roomId=${roomId}`);
+  }
 }

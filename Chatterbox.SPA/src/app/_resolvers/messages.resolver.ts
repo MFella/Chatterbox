@@ -20,5 +20,5 @@ export class MessagesResolver implements Resolve<boolean | MessageToReturnDto[]>
     .pipe(catchError((error) => {
       return of(false);
     }))
-  }
+  } 
 }

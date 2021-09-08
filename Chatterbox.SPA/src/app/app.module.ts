@@ -30,8 +30,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { InboxComponent } from './inbox/inbox.component';
 import { SendMessageComponent } from './send-message/send-message.component';
 import { UserListResolver } from './_resolvers/user-list.resolver';
-import { MessagesResolver } from './_resolvers/messages.resolver';
 import { ChatWithUserResolver } from './_resolvers/chat-with-user.resolver';
+import { MessagesResolver } from './_resolvers/messages.resolver';
 
 const config: SocketIoConfig = {url: `${environment.socketBackUrl}/chat`, options: {transports: ['websocket'], allowUpgrades: true}};
 

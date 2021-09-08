@@ -12,6 +12,8 @@
 
 .card
 {
+    min-height: 80vh;
+    max-height: 82vh;
     .card-body
     {
         min-height: 65vh;
@@ -64,15 +66,15 @@ ul.list-group
 }
 
 .active_user {
-    border-left: 3px solid rgba(160, 255, 228, 1);
+    border-left: 3px solid rgb(0, 255, 183);
     background-color: rgba(228,255,246,255);
-    // box-shadow: inset 0px 0px 2px 0px rgba(46, 40, 40, 0.75);
-    // display: none;
 }
 .card-body
 {
     overflow-y: scroll;
     padding-bottom: 1.5rem;
+    max-height: 60rem;
+    overflow: scroll;
 
     &::-webkit-scrollbar
     {

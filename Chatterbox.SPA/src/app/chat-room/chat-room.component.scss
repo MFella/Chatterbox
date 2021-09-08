@@ -38,12 +38,7 @@ $spaceForDash: 3rem;
         border-top-right-radius: 1rem;
         @include round_border_card;
 
-
         min-height:4rem;
-        .btn
-        {
-            //transform: scale(1.6) ;
-        }
     }
 
     input.message_input

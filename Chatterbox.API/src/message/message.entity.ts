@@ -35,12 +35,6 @@ export class Message
         nullable: false
     })
     content: string;
-
-    // @BeforeInsert()
-    // createDate() {
-    //     let now = new Date().toISOString().split('T');
-    //     this.creationDate = now[0] + ' ' + now[1].split('.')[0];
-    // }
 }
 
 export enum TypeOfMessage {
